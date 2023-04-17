@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->boolean('is_insured');
+            $table->boolean('is_insured')->default(false);
             $table->json('prescription');
             $table->enum('status', ['New', 'Processing', 'Waiting', 'Canceled', 'Confirmed', 'Delivered']);
             $table->foreignId('pharmacy_id')->nullable()->constrained('pharmacies');
-            $table->foreignId('doctor_id')->constrained('doctors');
+            $table->foreignId('doctor_id')->nullable()->constrained('doctors');
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('address_id')->constrained('addresses');
+            $table->foreignId('address_id')->constrained('user_addresses');
             $table->timestamps();
         });
     }

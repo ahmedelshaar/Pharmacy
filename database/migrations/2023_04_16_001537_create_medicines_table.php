@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('medicines', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->double('price');
-            $table->double('cost');
+            $table->integer('price');
+            $table->integer('cost');
             $table->timestamps();
         });
     }

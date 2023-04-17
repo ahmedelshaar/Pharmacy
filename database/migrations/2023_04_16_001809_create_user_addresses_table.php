@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('floor_number');
             $table->string('flat_number');
             $table->boolean('is_main')->default(false);
-            $table->unique(['user_id', 'is_main']);
+//            $table->unique(['user_id', 'is_main']);
             $table->timestamps();
         });
     }
