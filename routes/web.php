@@ -21,13 +21,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::resource('doctor', DoctorController::class);
-Route::resource('area', AreaController::class);
-Route::resource('medicine', MedicineController::class);
-Route::resource('order', OrderController::class);
-Route::resource('order_medicine', OrderMedicineController::class);
-Route::resource('pharmacy', PharmacyController::class);
-Route::resource('user_address', UserAddressController::class);
+Route::get('/',function (){
+   return view('admin.dashboard');
+});
+Route::prefix('/doctor')->group(function () {
+    Route::get('/', [\App\Http\Controllers\DoctorController::class, 'index'])->name('doctor.index');
+    Route::get('/create', [\App\Http\Controllers\DoctorController::class, 'create'])->name('doctor.create');
+    Route::post('/store', [\App\Http\Controllers\DoctorController::class, 'store'])->name('doctor.store');
+    Route::get('/{doctor}/edit', [\App\Http\Controllers\DoctorController::class, 'edit'])->name('doctor.edit');
+    Route::put('/{doctor}', [\App\Http\Controllers\DoctorController::class, 'update'])->name('doctor.update');
+    Route::delete('/{doctor}', [\App\Http\Controllers\DoctorController::class, 'destroy'])->name('doctor.destroy');
+});
+//Route::resource('doctor', DoctorController::class);
+//Route::resource('area', AreaController::class);
+//Route::resource('medicine', MedicineController::class);
+//Route::resource('order', OrderController::class);
+//Route::resource('order_medicine', OrderMedicineController::class);
+//Route::resource('pharmacy', PharmacyController::class);
+//Route::resource('user_address', UserAddressController::class);
 
 Auth::routes();
 
