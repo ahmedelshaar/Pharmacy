@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateDoctorFormRequest;
 use App\Models\Doctor;
 use App\Models\Pharmacy;
 use Illuminate\Http\Request;
@@ -59,7 +60,7 @@ class DoctorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateDoctorFormRequest $request)
     {
         $doctor = Doctor::create($request->all());
         if ($request->hasFile('image')) {
@@ -73,14 +74,6 @@ class DoctorController extends Controller
         } else {
             return back()->with('error', 'Failed to create a new Doctor..');
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Doctor $doctor)
-    {
-        //
     }
 
     /**

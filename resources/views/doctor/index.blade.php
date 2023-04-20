@@ -37,34 +37,13 @@
                                 <td>
                                     <div class="btn-group">
                                         <a href="{{ route('doctor.edit', $doctor->id) }}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
-                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal-{{ $doctor->id }}"><i class="fas fa-trash"></i></button>
+                                            <form id="delete-form-{{ $doctor->id }}">
+                                                {{ csrf_field() }}
+                                                <button type="button" class="btn btn-danger" onclick="deleteDoctor('{{ $doctor->id }}')"><i class="fas fa-trash"></i></button>
+                                            </form>
                                     </div>
                                 </td>
                             </tr>
-                            <!-- Delete Modal -->
-                            <div class="modal fade" id="deleteModal-{{ $doctor->id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel-{{ $doctor->id }}" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="deleteModalLabel-{{ $doctor->id }}">Confirm Deletion</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete {{ $doctor->name }}?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <form action="{{ route('doctor.destroy', $doctor->id) }}" method="POST">
-                                                {{ csrf_field() }}
-                                                {{ method_field('DELETE') }}
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-danger">Delete</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         @endforeach
                         </tbody>
                     </table>
@@ -109,5 +88,21 @@
                 $('#doctors-table').DataTable().search($(this).val()).draw();
             });
         });
+
+        function deleteDoctor(doctorId) {
+            if (confirm("Are you sure you want to delete this doctor?")) {
+                $.ajax({
+                    url: '/doctor/' + doctorId,
+                    type: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function() {
+                        // Update the page
+                        window.location.reload();
+                    }
+                });
+            }
+        }
     </script>
 @endsection

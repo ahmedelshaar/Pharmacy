@@ -65,4 +65,3 @@
         </div>
     </div>
 @endsection
-I hope this helps
