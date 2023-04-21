@@ -54,55 +54,60 @@
 @endsection
 
 @section('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
     <script>
-        $(document).ready(function() {
-            // DataTables plugin initialization
-            $('#doctors-table').DataTable({
-                // Sorting by 'name' column in ascending order by default
-                order: [[1, 'asc']],
-                // Enabling search functionality
-                searching: true,
-                // Customizing search input field
-                language: {
-                    searchPlaceholder: "Search by name, email, national ID, or pharmacy ID",
-                    search: "",
-                },
-            });
-
-            // Enable sorting when clicking on column headers
-            $('.sort').click(function() {
-                var column = $(this).data('sort');
-                var order = $('#doctors-table').DataTable().order()[0][1];
-                if (order === 'desc') {
-                    $('#doctors-table').DataTable().order([[column, 'asc']]).draw();
-                } else {
-                    $('#doctors-table').DataTable().order([[column, 'desc']]).draw();
-                }
-            });
-
-            // Enable search functionality
-            $('#search-input').on('keyup', function() {
-                $('#doctors-table').DataTable().search($(this).val()).draw();
-            });
+        $('#example').dataTable( {
+            "ajax": "data.json"
         });
-
-        function deleteDoctor(doctorId) {
-            if (confirm("Are you sure you want to delete this doctor?")) {
-                $.ajax({
-                    url: '/doctor/' + doctorId,
-                    type: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function() {
-                        // Update the page
-                        window.location.reload();
-                    }
-                });
-            }
-        }
     </script>
+{{--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>--}}
+{{--    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>--}}
+{{--    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">--}}
+{{--    <script>--}}
+{{--        $(document).ready(function() {--}}
+{{--            // DataTables plugin initialization--}}
+{{--            $('#doctors-table').DataTable({--}}
+{{--                // Sorting by 'name' column in ascending order by default--}}
+{{--                order: [[1, 'asc']],--}}
+{{--                // Enabling search functionality--}}
+{{--                searching: true,--}}
+{{--                // Customizing search input field--}}
+{{--                language: {--}}
+{{--                    searchPlaceholder: "Search by name, email, national ID, or pharmacy ID",--}}
+{{--                    search: "",--}}
+{{--                },--}}
+{{--            });--}}
+
+{{--            // Enable sorting when clicking on column headers--}}
+{{--            $('.sort').click(function() {--}}
+{{--                var column = $(this).data('sort');--}}
+{{--                var order = $('#doctors-table').DataTable().order()[0][1];--}}
+{{--                if (order === 'desc') {--}}
+{{--                    $('#doctors-table').DataTable().order([[column, 'asc']]).draw();--}}
+{{--                } else {--}}
+{{--                    $('#doctors-table').DataTable().order([[column, 'desc']]).draw();--}}
+{{--                }--}}
+{{--            });--}}
+
+{{--            // Enable search functionality--}}
+{{--            $('#search-input').on('keyup', function() {--}}
+{{--                $('#doctors-table').DataTable().search($(this).val()).draw();--}}
+{{--            });--}}
+{{--        });--}}
+
+{{--        function deleteDoctor(doctorId) {--}}
+{{--            if (confirm("Are you sure you want to delete this doctor?")) {--}}
+{{--                $.ajax({--}}
+{{--                    url: '/doctor/' + doctorId,--}}
+{{--                    type: 'DELETE',--}}
+{{--                    data: {--}}
+{{--                        _token: '{{ csrf_token() }}'--}}
+{{--                    },--}}
+{{--                    success: function() {--}}
+{{--                        // Update the page--}}
+{{--                        window.location.reload();--}}
+{{--                    }--}}
+{{--                });--}}
+{{--            }--}}
+{{--        }--}}
+{{--    </script>--}}
 @endsection

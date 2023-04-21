@@ -20,17 +20,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(CountriesSeeder::class);
+//        $this->call(CountriesSeeder::class);
 
-        Admin::factory(1)->create();
-        User::factory(10)->create();
-        Area::factory(10)->create();
-        Pharmacy::factory(10)->create();
+//        Admin::factory(1)->create();
+//        User::factory(10)->create();
+//        Area::factory(10)->create();
+//        Pharmacy::factory(10)->create();
         Doctor::factory(10)->create();
-        Medicine::factory(10)->create();
-        UserAddress::factory(10)->create();
-        Order::factory(10)->create();
-        OrderMedicine::factory(10)->create();
+//        Medicine::factory(10)->create();
+//        UserAddress::factory(10)->create();
+//        Order::factory(10)->create();
+//        OrderMedicine::factory(10)->create();
 
 
 

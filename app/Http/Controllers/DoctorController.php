@@ -117,4 +117,8 @@ class DoctorController extends Controller
         $deletedDoctor = Doctor::destroy($doctor->getKey());
         return redirect()->route('doctor.index');
     }
+
+    public function data(){
+        return datatables()->collection(Doctor::all())->toJson();
+    }
 }
