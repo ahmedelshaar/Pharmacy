@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('avatar');
             $table->integer('priority');
             $table->foreignId('area_id')->constrained('areas');
+            $table->foreignId('owner_id')->constrained('areas');
             $table->softDeletes();
             $table->timestamps();
         });
