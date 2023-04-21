@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('user_addresses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('area_id')->constrained('areas');
             $table->string('street_name');
             $table->string('building_number');
             $table->string('floor_number');
             $table->string('flat_number');
             $table->boolean('is_main')->default(false);
-//            $table->unique(['user_id', 'is_main']);
             $table->timestamps();
         });
     }

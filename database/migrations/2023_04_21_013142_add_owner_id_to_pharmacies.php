@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('admins', function (Blueprint $table) {
-            $table->id();
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+        Schema::table('pharmacies', function (Blueprint $table) {
+            $table->foreignId('owner_id')->nullable()->constrained('doctors')->nullOnDelete();
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('admins');
+        Schema::table('pharmacies', function (Blueprint $table) {
+            //
+        });
     }
 };

@@ -13,6 +13,7 @@ class AreaFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
+            'country_id' => $this->faker->numberBetween(1, 250),
         ];
     }
 }

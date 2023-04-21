@@ -17,9 +17,15 @@ return new class extends Migration
             $table->json('prescription');
             $table->enum('status', ['New', 'Processing', 'Waiting', 'Canceled', 'Confirmed', 'Delivered']);
             $table->foreignId('pharmacy_id')->nullable()->constrained('pharmacies');
-            $table->foreignId('doctor_id')->nullable()->constrained('doctors');
-            $table->foreignId('user_id')->constrained('users');
             $table->foreignId('address_id')->constrained('user_addresses');
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+            $table->foreignId('doctor_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
             $table->timestamps();
         });
     }
