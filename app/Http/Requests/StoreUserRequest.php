@@ -25,7 +25,7 @@ class StoreUserRequest extends FormRequest
             //Validate User Added Data
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:6|confirmed',
             'national_id' => 'required|numeric|unique:users',
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'image' => 'required|image|mimes:png,jpg|max:4048',
@@ -64,8 +64,6 @@ class StoreUserRequest extends FormRequest
 
             'email.email' => 'Email must be valid email',
             'password.confirmed' => 'Password must be confirmed',
-//            'password.password' => 'Password must be strong password
-//             having at least one uppercase letter, one lowercase letter, one digit and one special character',
 
             'email.unique' => 'Email must be unique',
             'national_id.unique' => 'National ID must be unique',
@@ -77,7 +75,6 @@ class StoreUserRequest extends FormRequest
             'birth_date.required' => 'Birth Date is required',
             'birth_date.date' => 'Birth Date must be date',
 
-//            gender Messages
             'gender.required' => 'Gender Is Required',
             'gender.in' => 'The gender field must be one of: male, female, other.',
 
