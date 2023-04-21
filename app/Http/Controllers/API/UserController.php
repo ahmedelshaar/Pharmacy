@@ -3,63 +3,105 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        //Get All Users
+        $users = User::paginate(10);
+//        $users = User::all();
+        return response()->json($users);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        //User By ID
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json('User Not Found');
+        }
+        return response()->json($user);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+
+    public function store(StoreUserRequest $request)
     {
-        //
+        //Save User and Image
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imgName = time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $imgName);
+        }
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'image' => $imgName,
+            'national_id' => $request->national_id,
+            'phone' => $request->phone,
+            'birth_date' => $request->birth_date,
+            'gender' => $request->gender,
+            'last_login' => now(),
+        ]);
+
+//        Send Email verification
+        $user->sendEmailVerificationNotification();
+
+        return response()->json($user);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+
+    public function update(UpdateUserRequest $request, string $id)
     {
-        //
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imgName = time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $imgName);
+
+            $oldImage = public_path('/images/') . Auth::user()->image;
+            if (file_exists($oldImage)) {
+                @unlink($oldImage);
+            }
+            $request->merge(['image' => $imgName]);
+        }
+
+
+        Auth::user()->update($request->all());
+
+        return response()->json(Auth::user());
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
-        //
+        $user = User::find($id);
+//        If User Not Found
+        if (!$user) {
+            return response()->json('User Not Found');
+        }
+//        if User has Orders
+        if ($user->orders()->exists()) {
+//            return response()->json($user->orders);
+            return response()->json('User Has Orders Can\'t Delete');
+        }
+//        If User has Image Delete it
+        if ($user->image) {
+            $oldImage = public_path('/images/') . $user->image;
+            if (file_exists($oldImage)) {
+                @unlink($oldImage);
+            }
+        }
+        $user->delete();
+        return response()->json('User Deleted Successfully');
     }
+
+
 }
