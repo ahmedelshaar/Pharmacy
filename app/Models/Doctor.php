@@ -39,5 +39,4 @@ class Doctor extends Model
         return $this->belongsTo(Pharmacy::class);
     }
 
-
 }
