@@ -119,6 +119,8 @@ class DoctorController extends Controller
     }
 
     public function data(){
-        return datatables()->collection(Doctor::all())->toJson();
+        return datatables()->collection(Doctor::with(['pharmacy' => function($query) {
+            $query->select('id', 'name');
+        }])->get())->toJson();
     }
 }
