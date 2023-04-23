@@ -23,7 +23,6 @@ class StorePharmacyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
             'name' => 'required|min:5',
             'priority'=>'required',
             'area_id' => 'required|exists:App\Models\Area,id',
