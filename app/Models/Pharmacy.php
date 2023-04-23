@@ -4,12 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Pharmacy extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory , SoftDeletes;
 
     protected $fillable = [
         'name',
