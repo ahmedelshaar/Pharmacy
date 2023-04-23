@@ -43,6 +43,19 @@ Route::prefix('/doctor')->group(function () {
 //Route::resource('pharmacy', PharmacyController::class);
 //Route::resource('user_address', UserAddressController::class);
 
+
+Route::prefix('/medicine')->group(function () {
+    Route::get('/', [\App\Http\Controllers\MedicineController::class, 'index'])->name('medicine.index');
+    Route::get('/create', [\App\Http\Controllers\MedicineController::class, 'create'])->name('medicine.create');
+    Route::post('/store', [\App\Http\Controllers\MedicineController::class, 'store'])->name('medicine.store');
+    Route::get('/edit/{medicine}', [\App\Http\Controllers\MedicineController::class, 'edit'])->name('medicine.edit');
+    Route::put('/update/{medicine}', [\App\Http\Controllers\MedicineController::class, 'update'])->name('medicine.update');
+    Route::delete('/medicine/{medicine}', [\App\Http\Controllers\MedicineController::class, 'destroy'])->name('medicine.destroy');
+
+});
+
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+  
