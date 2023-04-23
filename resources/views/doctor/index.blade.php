@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@section('title')
+    All Doctors
+@endsection
+
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
@@ -8,7 +12,8 @@
                     <h1>Doctors</h1>
                 </div>
                 <div class="col-sm-6 d-flex justify-content-end">
-                    <a href="{{ route('doctor.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add a New Doctor</a>
+                    <a href="{{ route('doctor.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add a New
+                        Doctor</a>
                 </div>
             </div>
         </div>
@@ -38,7 +43,7 @@
         $('#doctors-table').dataTable({
             processing: true,
             serverSide: true,
-            "ajax": "{{ route('doctor.data') }}",
+            ajax: "{{ route('doctor.index') }}",
             columns: [
                 {data: 'id'},
                 {data: 'name'},
@@ -48,10 +53,15 @@
                     data: 'image',
                     name: 'image',
                     render: function (data, type, full, meta) {
-                        return '<img src="' + data + '" height="50"/>';
+                        {{--return '<img src="' + {{ asset('images/doctors/:image') }} + '" height="50"/>'.replace(':image', data);--}}
+                            return '<img src="' + '{{ asset('') }}' + data + '" height="50"/>';
                     }
                 },
-                {data: 'created_at'},
+                {
+                    data: 'created_at', render: function (data, type, full, meta) {
+                        return new Date(data).toLocaleDateString();
+                    }
+                },
                 {
                     data: 'id',
                     name: 'edit',

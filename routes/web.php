@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/',function (){
    return view('admin.dashboard');
-});
+})->name('dashboard');
 
 Route::prefix('/doctor')->group(function () {
     Route::get('/', [\App\Http\Controllers\DoctorController::class, 'index'])->name('doctor.index');

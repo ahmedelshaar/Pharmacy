@@ -24,6 +24,7 @@ class Doctor extends Model
         'password',
     ];
 
+
     public function scopeBanned($query)
     {
         return $query->where('is_banned', true);
