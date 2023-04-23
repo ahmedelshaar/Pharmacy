@@ -105,7 +105,7 @@
                                 @endforeach
                             </select>
                             @error('pharmacy_id')
-                            <span class="invalid-feedback">{{ $message }}</span>
+                                <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>

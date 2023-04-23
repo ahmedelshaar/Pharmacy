@@ -43,7 +43,7 @@
         $('#doctors-table').dataTable({
             processing: true,
             serverSide: true,
-            "ajax": "{{ route('doctor.index') }}",
+            ajax: "{{ route('doctor.index') }}",
             columns: [
                 {data: 'id'},
                 {data: 'name'},
