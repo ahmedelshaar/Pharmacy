@@ -89,7 +89,7 @@
                                    class="form-control @error('national_id') is-invalid @enderror"
                                    value="{{ old('national_id') }}" required>
                             @error('national_id')
-                            <span class="invalid-feedback">{{ $message }}</span>
+                                <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
