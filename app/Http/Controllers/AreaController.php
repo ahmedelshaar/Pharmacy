@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use Illuminate\Http\Request;
 
+
 class AreaController extends Controller
 {
     /**
@@ -12,6 +13,9 @@ class AreaController extends Controller
      */
     public function index()
     {
+        $area = Area::all();
+       // $areas = Area::with('country')->get();
+        return view('areas.index', ['area' => $area]);
 
     }
 
@@ -20,7 +24,10 @@ class AreaController extends Controller
      */
     public function create()
     {
-        //
+        $allAreas = Area::all();
+        return view('areas.create', [
+            'areas' => $allAreas
+        ]);
     }
 
     /**
@@ -28,7 +35,12 @@ class AreaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data= $request->all();
+        $item=Area::create([
+            'name'=>$data['name'],
+            'country_id'=>$data['country_id'],            
+        ]);
+        return redirect()->route('areas.index');
     }
 
     /**
@@ -44,7 +56,7 @@ class AreaController extends Controller
      */
     public function edit(Area $area)
     {
-        //
+        return view('areas.edit', ['area' => $area]);
     }
 
     /**
@@ -52,7 +64,11 @@ class AreaController extends Controller
      */
     public function update(Request $request, Area $area)
     {
-        //
+        $area->update([
+            'name' => $request->name,
+            'country_id' => $request->country_id,
+        ]);
+        return redirect()->route('areas.index');
     }
 
     /**
@@ -60,6 +76,7 @@ class AreaController extends Controller
      */
     public function destroy(Area $area)
     {
-        //
+        $area->delete();
+        return redirect()->route('areas.index');
     }
 }

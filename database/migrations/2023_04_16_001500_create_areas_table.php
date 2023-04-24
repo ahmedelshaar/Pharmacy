@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('country_id')->constrained('countries');
+            $table->unsignedBigInteger('country_id');
+            $table->foreign('country_id')->references('id')->on('countries');
+            // $table->foreignId('country_id')->constrained('countries');
             $table->timestamps();
         });
     }
