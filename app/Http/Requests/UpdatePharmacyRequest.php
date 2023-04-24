@@ -37,7 +37,7 @@ class UpdatePharmacyRequest extends FormRequest
         return [
             //
             'name.required' => 'Title is required',
-            'name.min' => 'Title must be at least 3 characters',
+            'name.min' => 'Title must be at least 5 characters',
             'description.required' => 'description is required',
             'description.min' => 'description must be at least 10 characters',
             'area_id.required' => 'Area is required',

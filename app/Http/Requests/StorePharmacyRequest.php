@@ -40,6 +40,10 @@ class StorePharmacyRequest extends FormRequest
             'description.min' => 'description must be at least 10 characters',
             'area_id.required' => 'Area is required',
             'area_id.exists' => 'Area does not exist',
+            'avatar.required' => 'Avatar is required',
+            'avatar.image' => 'Avatar must be an image',
+            'avatar.mimes' => 'Avatar must be a file of type: jpeg, jpg',
+
         ];
     }
 }
