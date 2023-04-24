@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->boolean('is_insured')->default(false);
             $table->json('prescription');
-            $table->enum('status', ['New', 'Processing', 'Waiting', 'Canceled', 'Confirmed', 'Delivered']);
+            $table->enum('status', ['New', 'Processing', 'Waiting', 'Canceled', 'Confirmed', 'Delivered'])->default('New');
             $table->foreignId('pharmacy_id')->nullable()->constrained('pharmacies');
             $table->foreignId('address_id')->constrained('user_addresses');
             $table->foreignId('user_id')

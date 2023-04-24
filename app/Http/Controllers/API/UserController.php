@@ -73,8 +73,11 @@ class UserController extends Controller
             $request->merge(['image' => $imgName]);
         }
 
+// User can't update email
 
-        Auth::user()->update($request->all());
+        $request->merge(['email' => Auth::user()->email]);
+        $user = Auth::user()->update($request->all());
+
 
         return response()->json(Auth::user());
     }

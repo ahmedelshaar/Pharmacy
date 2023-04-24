@@ -9,7 +9,7 @@ use Spatie\Permission\Traits\HasRoles;
 class Doctor extends Model
 {
     use HasFactory, HasRoles;
-
+    public string $guard_name = 'web';
     protected $fillable = [
         'name',
         'email',
@@ -23,6 +23,7 @@ class Doctor extends Model
     protected $hidden = [
         'password',
     ];
+
 
     public function scopeBanned($query)
     {
