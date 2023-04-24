@@ -10,6 +10,10 @@ class OrdersController extends Controller
 {
     public function index()
     {
+//        If User have no orders
+        if (Auth::user()->orders->isEmpty()) {
+            return response()->json('You have no orders');
+        }
         return response()->json(Auth::user()->orders()->paginate(10));
     }
 

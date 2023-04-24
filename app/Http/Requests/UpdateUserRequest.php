@@ -24,7 +24,7 @@ class UpdateUserRequest extends FormRequest
         return [
             //Validate User Updated Data to be optional
             'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users',
+            'email' => 'exclude',
             'password' => 'sometimes|string|min:6',
             'national_id' => 'sometimes|numeric|unique:users',
             'phone' => 'sometimes|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
@@ -38,7 +38,7 @@ class UpdateUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.string' => __('validation.string', ['attribute' => 'name']),
+            'name.string' => __('validation.string', ['attribute' => 'name']), //??
         ];
     }
 }

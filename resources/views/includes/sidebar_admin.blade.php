@@ -28,29 +28,6 @@
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-copy"></i>
                     <p>
-                        Doctor
-                        <i class="fas fa-angle-left right"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="{{ route('doctor.index') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>All</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('doctor.create') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Add</p>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-copy"></i>
-                    <p>
                         Area
                         <i class="fas fa-angle-left right"></i>
                     </p>
@@ -74,29 +51,6 @@
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-copy"></i>
                     <p>
-                        Order
-                        <i class="fas fa-angle-left right"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="{{ route('order.index') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>All</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('order.create') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Add</p>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-copy"></i>
-                    <p>
                         Pharmacy
                         <i class="fas fa-angle-left right"></i>
                     </p>
@@ -110,6 +64,52 @@
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('pharmacy.create') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Add</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-copy"></i>
+                    <p>
+                        Doctor
+                        <i class="fas fa-angle-left right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('doctor.index') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>All</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('doctor.create') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Add</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-copy"></i>
+                    <p>
+                        Order
+                        <i class="fas fa-angle-left right"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('order.index') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>All</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('order.create') }}" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Add</p>
                         </a>

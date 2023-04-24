@@ -12,7 +12,7 @@ class AreaController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**

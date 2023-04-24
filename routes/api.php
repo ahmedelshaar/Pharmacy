@@ -8,7 +8,9 @@ use Carbon\Carbon;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +62,7 @@ Route::post('/sanctum/token', function (Request $request) {
     ]);
 });
 
+// Verify Email
 Route::get('/email/verify/{id}/{hash}', function (Request $request) {
     $user = User::find($request->id);
     if ($user->hasVerifiedEmail()) {
@@ -86,5 +89,56 @@ Route::post('/email/verification-notification', function (Request $request) {
         'message' => 'Email verification link sent on your email'
     ]);
 })->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+// Send reset Password Link
+Route::post('/forgot-password', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email'
+    ]);
+    $user = User::where('email', $request->email)->first();
+    if (!$user) {
+        return response()->json([
+            'message' => 'We can\'t find a user with that email address.'
+        ], 404);
+    }
+    Password::sendResetLink($request->only('email'));
+    return response()->json([
+        'message' => 'We have e-mailed your password reset link!'
+    ]);
+});
+
+// Reset Password
+Route::post('/reset-password', function (Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed'
+    ]);
+    $user = User::where('email', $request->email)->first();
+    if (!$user) {
+        return response()->json([
+            'message' => 'We can\'t find a user with that email address.'
+        ], 404);
+    }
+    $status = Password::reset($request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user) use ($request) {
+            $user->forceFill([
+                'password' => Hash::make($request->password)
+            ])->setRememberToken(Str::random(60));
+            $user->save();
+        });
+    if ($status == Password::INVALID_TOKEN) {
+        return response()->json([
+            'message' => 'This password reset token is invalid.'
+        ], 400);
+    }
+
+    if ($status == Password::PASSWORD_RESET) {
+        $user->tokens()->delete();
+        return response()->json([
+            'message' => 'Password reset successfully'
+        ]);
+    }
+});
 
 
