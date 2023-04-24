@@ -31,6 +31,7 @@
                     <th>Created At</th>
                     <th>Edit</th>
                     <th>Delete</th>
+                    <th>Show</th>
                 </tr>
                 </thead>
             </table>
@@ -53,7 +54,6 @@
                     data: 'image',
                     name: 'image',
                     render: function (data, type, full, meta) {
-                        {{--return '<img src="' + {{ asset('images/doctors/:image') }} + '" height="50"/>'.replace(':image', data);--}}
                             return '<img src="' + '{{ asset('') }}' + data + '" height="50"/>';
                     }
                 },
@@ -74,6 +74,13 @@
                     name: 'delete',
                     render: function (data, type, full, meta) {
                         return '<form action="{{ route('doctor.destroy', ':id') }}" method="POST" onsubmit="return confirm(\'Are you sure?\')"><input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form>'.replace(':id', data);
+                    }
+                },
+                {
+                    data: 'id',
+                    name: 'show',
+                    render: function (data, type, full, meta) {
+                        return '<a href="{{ route('doctor.show', ':id') }}" class="btn btn-success btn-sm">Show</a>'.replace(':id', data);
                     }
                 }
             ]

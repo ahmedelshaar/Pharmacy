@@ -14,20 +14,12 @@ class PharmacyController extends Controller
      */
     public function index(Request $request)
     {
-        //
-        // if ($request->ajax()) {
-        //     return datatables()->collection(Pharmacy::with(['area' => function($query) {
-        //         $query->select('id', 'name');
-        //     }])->get())->toJson();
-        // }
-        // return view('pharmacy.index');
-
-
-        $allPharamacies = Pharmacy::all();  //select * from Posts
-
-        return view('pharmacy.index',[
-            'pharmacies' => $allPharamacies,
-        ]);
+         if ($request->ajax()) {
+             return datatables()->collection(Pharmacy::with(['area' => function($query) {
+                 $query->select('id', 'name');
+             }])->get())->toJson();
+         }
+         return view('pharmacy.index');
     }
 
     /**
@@ -35,7 +27,6 @@ class PharmacyController extends Controller
      */
     public function create()
     {
-        //
         $areas = Area::all();
         return view('pharmacy.create',["areas" => $areas]);
     }
@@ -45,21 +36,11 @@ class PharmacyController extends Controller
      */
     public function store(StorePharmacyRequest $request)
     {
-        if($request->hasFile('avatar')) {
-            $avatar = $request->file('avatar');
-            $imageName = time() . '.' . $avatar ->extension();
-            $avatar ->move(public_path('images'), $imageName);
-            Pharmacy::create($request->except('_token', 'avatar','area_id') + ['avatar' => $imageName, 'area_id' => $request['area_id']]);
-        }else{
-        Pharmacy::create([
-            'name' => $request['name'],
-            'priority' => $request['priority'],
-            'area_id' => $request['area_id'],
-            'avatar'=>$request['avatar'],
-        ]);
-
-        return redirect()->route('pharamacy.index');
-        }
+        $avatar = $request->file('avatar');
+        $imageName = time() . '.' . $avatar ->extension();
+        $avatar ->move(public_path('images'), $imageName);
+        Pharmacy::create($request->except('avatar') + ['avatar' => $imageName]);
+        return redirect()->route('pharmacy.index');
     }
 
 
@@ -68,21 +49,16 @@ class PharmacyController extends Controller
      */
     public function show(Pharmacy $pharmacy)
     {
-        //
+        return view('pharmacy.show', compact('pharmacy'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit(Pharmacy $pharmacy)
     {
-        //
         $areas = Area::all();
-        $pharmacy = Pharmacy::find($id);
-        return view('pharmacy.edit',[
-            'pharmacy' => $pharmacy,
-            'areas' => $areas,
-        ]);
+        return view('pharmacy.edit', compact('pharmacy', 'areas'));
     }
 
     /**
@@ -90,27 +66,27 @@ class PharmacyController extends Controller
      */
     public function update(Request $request, Pharmacy $pharmacy)
     {
-        //
+        $pharmacy->fill($request->except('avatar'));
+        if ($request->hasFile('avatar')) {
+            $avatar = $request->file('avatar');
+            $imageName = time() . '.' . $avatar ->extension();
+            $avatar ->move(public_path('images'), $imageName);
+            if (file_exists(public_path($pharmacy->avatar))) {
+                unlink(public_path($request->avatar));
+            }
+            $pharmacy->avatar = $imageName;
+        }
+        $pharmacy->save();
+        return redirect()->route('pharmacy.index')->with('success', 'Pharmacy updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Pharmacy $pharmacy)
     {
-        //
-        //soft delete
-        $pharmacy = Pharmacy::find($id);
         $pharmacy->delete();
-        return redirect()->route('pharamacy.index');
-
-
+        return redirect()->route('pharmacy.index')->with('success', 'Pharmacy deleted successfully');
     }
 
-    //restore data after delete
-    // public function restore()
-    // {
-    //     Pharmacy::withTrashed()->restore();
-    //     return redirect()->back();
-    // }
 }

@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/',function (){
+   $doctor =  \App\Models\Doctor::find(1);
    return view('admin.dashboard');
 })->name('dashboard');
 

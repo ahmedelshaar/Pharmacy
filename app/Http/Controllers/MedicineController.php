@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MedicineStoreRequest;
+use App\Http\Requests\MedicineUpdateRequest;
+use App\Models\Doctor;
 use App\Models\Medicine;
 use Illuminate\Http\Request;
-use DataTable;
 
 class MedicineController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $medicine = Medicine::all();
-        return view('medicine.index', compact('medicine'));
+        if($request->ajax()) {
+            return datatables()->collection(Medicine::with(['pharmacy' => function($query) {
+                $query->select('id', 'name');
+            }])->get())->toJson();
+        }
+        return view('medicine.index');
     }
 
     /**
@@ -28,35 +34,10 @@ class MedicineController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MedicineStoreRequest $request)
     {
-        $medicine = Medicine::all();
-
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'price' => 'required|numeric',
-            'cost' => 'required|numeric',
-        ]);
-
-        // create new medicine
-        $medicine = new Medicine;
-        $medicine->name = $validatedData['name'];
-        $medicine->price = $validatedData['price'];
-        $medicine->cost = $validatedData['cost'];
-
-        if ($medicine->save()) {
-            $medicine = Medicine::all();
-            return view('medicine.index', compact('medicine'));
-            // return response()->json([
-            //     'success' => true,
-            //     'message' => 'New Medicine created Successfully!'
-            // ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create a new Medicine..'
-            ]);
-        }
+        Medicine::create($request->all());
+        return redirect()->route('medicine.index')->with('success', 'New Medicine created Successfully!');
     }
 
     /**
@@ -64,7 +45,7 @@ class MedicineController extends Controller
      */
     public function show(Medicine $medicine)
     {
-        //
+        return view('medicine.show', compact('medicine'));
     }
 
     /**
@@ -78,23 +59,10 @@ class MedicineController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Medicine $medicine)
+    public function update(MedicineUpdateRequest $request, Medicine $medicine)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'price' => 'required|numeric',
-            'cost' => 'required|numeric',
-        ]);
-
-        $medicine->name = $validatedData['name'];
-        $medicine->price = $validatedData['price'];
-        $medicine->cost = $validatedData['cost'];
-
-        if ($medicine->save()) {
-            return redirect()->route('medicine.index')->with('success', 'Medicine updated successfully');
-        } else {
-            return redirect()->back()->with('error', 'Failed to update medicine');
-        }
+        $medicine->update($request->all());
+        return redirect()->route('medicine.index')->with('success', 'Medicine updated successfully');
     }
 
 
@@ -103,13 +71,8 @@ class MedicineController extends Controller
      */
     public function destroy(Medicine $medicine)
     {
-        if ($medicine->delete()) {
-            return redirect()->route('medicine.index')
-                ->with('success', 'Medicine deleted successfully');
-        } else {
-            return redirect()->route('medicine.index')
-                ->with('error', 'Failed to delete medicine');
-        }
+        $medicine->delete();
+        return redirect()->route('medicine.index')->with('success', 'Medicine deleted successfully');
     }
 
 }

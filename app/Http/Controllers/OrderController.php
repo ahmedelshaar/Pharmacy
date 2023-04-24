@@ -14,8 +14,12 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $order = Order::all();
-        return view('order.index', compact('order'));
+        if(request()->ajax()) {
+            return datatables()->of(Order::with(['user' => function($query) {
+                $query->select('id', 'name');
+            }])->get())->toJson();
+        }
+        return view('order.index');
     }
 
     /**
@@ -23,7 +27,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-
+        return view('order.create');
     }
 
     /**
@@ -31,7 +35,8 @@ class OrderController extends Controller
      */
     public function store(OrderStoreRequest $request)
     {
-        //
+        Order::create($request->all());
+        return redirect()->route('order.index')->with('success', 'Order created successfully.');
     }
 
     /**
@@ -39,7 +44,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        return view('order.show', compact('order'));
     }
 
     /**
@@ -47,7 +52,7 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        //
+        return view('order.edit', compact('order'));
     }
 
     /**
@@ -55,7 +60,8 @@ class OrderController extends Controller
      */
     public function update(OrderUpdateRequest $request, Order $order)
     {
-        //
+        $order->update($request->all());
+        return redirect()->route('order.index')->with('success', 'Order updated successfully.');
     }
 
     /**
@@ -63,6 +69,7 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+        $order->delete();
+        return redirect()->route('order.index')->with('success', 'Order deleted successfully.');
     }
 }

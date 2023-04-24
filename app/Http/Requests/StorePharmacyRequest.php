@@ -27,7 +27,7 @@ class StorePharmacyRequest extends FormRequest
             'name' => 'required|min:5',
             'priority'=>'required',
             'area_id' => 'required|exists:App\Models\Area,id',
-            'avatar' => 'required|image|mimes:jpeg,jpg|max:2048',
+            'avatar' => 'required|image|max:2048',
         ];
     }
 

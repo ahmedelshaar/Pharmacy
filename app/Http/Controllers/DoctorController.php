@@ -9,6 +9,7 @@ use App\Models\Pharmacy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Exceptions\Exception;
+use Yajra\DataTables\Facades\DataTables;
 
 class DoctorController extends Controller
 {
@@ -21,7 +22,7 @@ class DoctorController extends Controller
         if ($request->ajax()) {
             return datatables()->collection(Doctor::with(['pharmacy' => function($query) {
                 $query->select('id', 'name');
-            }])->get())->toJson();
+            }])->role('doctor')->get())->toJson();
         }
         return view('doctor.index');
     }
@@ -35,6 +36,11 @@ class DoctorController extends Controller
         return view('doctor.create', compact('pharmacies'));
     }
 
+
+    public function show(Doctor $doctor)
+    {
+        return view('doctor.show', compact('doctor'));
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -76,7 +82,7 @@ class DoctorController extends Controller
             $doctor->image = 'images/doctors/' . $imageName;
         }
         $doctor->save();
-        return redirect()->route('doctor.index');
+        return redirect()->route('doctor.index')->with('success', 'Doctor updated successfully!');
     }
 
     /**

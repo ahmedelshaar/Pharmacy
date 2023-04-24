@@ -1,90 +1,89 @@
 @extends('layouts.admin')
 
+@section('title')
+    All Pharmacies
+@endsection
+
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Pharmacy</h3>
-                    <div class="card-tools">
-                        <a href="{{ route('pharmacy.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add a
-                            New
-                            Pharmacy</a>
-                    </div>
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Pharmacies</h1>
                 </div>
-                <div class="card-body">
-                    <table class="table table-bordered table-hover" id="doctors-table">
-                        <thead>
-                            <tr>
-                                <th style="width: 10px">#</th>
-                                <th><a href="#" class="sort" data-sort="name">Name</a></th>
-                                <th><a href="#" class="sort" data-sort="priority">Priority</a></th>
-                                <th><a href="#" class="sort" data-sort="area">Area</a></th>
-                                <th><a href="#" class="sort" data-sort="avatar">Pharmacy Image</a></th>
-                                <th>Image</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($pharmacies as $pharmacy)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td class="name">{{ $pharmacy->name }}</td>
-                                    <td class="priority">{{ $pharmacy->priority }}</td>
-                                    <td class="area_id">{{ $pharmacy->area->name }}</td>
-                                    @if ($pharmacy->avatar)
-                                        <td class="avatar"><img src="{{ $pharmacy->avatar }}" alt="{{ $pharmacy->name }}"
-                                                class="img-thumbnail" style="max-height: 100px;"></td>
-                                    @else
-                                        <td class="avatar"><img src="{{ asset('images/placeholder.png') }}"
-                                                alt="{{ $pharmacy->name }}" class="img-thumbnail"
-                                                style="max-height: 100px;">
-                                        </td>
-
-                                        <div class="btn-group">
-                                            <a href="{{ route('pharmacy.edit', $pharmacy->id) }}"
-                                                class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
-                                            <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
-                                                data-target="#deleteModal-{{ $pharmacy->id }}"><i
-                                                    class="fas fa-trash"></i></button>
-                                        </div>
-                                        </td>
-                                </tr>
-
-                                {{-- for delete Modal --}}
-                                <div class="modal fade" id="deleteModal-{{ $pharmacy->id }}" tabindex="-1" role="dialog"
-                                    aria-labelledby="deleteModalLabel-{{ $pharmacy->id }}" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteModalLabel-{{ $pharmacy->id }}">Confirm
-                                                    Deletion</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">×</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                Are you sure you want to delete {{ $pharmacy->name }}?
-                                            </div>
-                                            <div class="modal-footer">
-                                                <form action="{{ route('pharmacy.destroy', $pharmacy->id) }}"
-                                                    method="POST">
-                                                    {{ csrf_field() }}
-                                                    {{ method_field('DELETE') }}
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Cancel</button>
-                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
-                        </tbody>
-                    </table>
+                <div class="col-sm-6 d-flex justify-content-end">
+                    <a href="{{ route('pharmacy.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add a New
+                        Pharmacy</a>
                 </div>
             </div>
         </div>
+    </section>
+    <div class="card">
+        <div class="card-body">
+            <table id="pharmacies-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Area</th>
+                    <th>Priority</th>
+                    <th>Image</th>
+                    <th>Created At</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>Show</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $('#pharmacies-table').dataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('pharmacy.index') }}",
+            columns: [
+                {data: 'id'},
+                {data: 'name'},
+                {data: 'area.name'},
+                {data: 'priority'},
+                {
+                    data: 'image',
+                    name: 'image',
+                    render: function (data, type, full, meta) {
+                        return '<img src="' + '{{ asset('') }}' + data + '" height="50"/>';
+                    }
+                },
+                {
+                    data: 'created_at', render: function (data, type, full, meta) {
+                        return new Date(data).toLocaleDateString();
+                    }
+                },
+                {
+                    data: 'id',
+                    name: 'edit',
+                    render: function (data, type, full, meta) {
+                        return '<a href="{{ route('pharmacy.edit', ':id') }}" class="btn btn-primary btn-sm">Edit</a>'.replace(':id', data);
+                    }
+                },
+                {
+                    data: 'id',
+                    name: 'delete',
+                    render: function (data, type, full, meta) {
+                        return '<form action="{{ route('pharmacy.destroy', ':id') }}" method="POST" onsubmit="return confirm(\'Are you sure?\')"><input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form>'.replace(':id', data);
+                    }
+                },
+                {
+                    data: 'id',
+                    name: 'show',
+                    render: function (data, type, full, meta) {
+                        return '<a href="{{ route('pharmacy.show', ':id') }}" class="btn btn-success btn-sm">Show</a>'.replace(':id', data);
+                    }
+                }
+            ]
+        });
+    </script>
 @endsection
