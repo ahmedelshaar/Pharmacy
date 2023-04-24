@@ -35,6 +35,19 @@ Route::prefix('/doctor')->group(function () {
     Route::get('/data', [\App\Http\Controllers\DoctorController::class, 'data'])->name('doctor.data');
 });
 
+//Areas
+Route::prefix('/areas')->group(function () {
+     Route::get('/', [\App\Http\Controllers\AreaController::class, 'index'])->name('areas.index');
+     Route::get('/create', [\App\Http\Controllers\AreaController::class, 'create'])->name('areas.create');
+     Route::post('/store', [\App\Http\Controllers\AreaController::class, 'store'])->name('areas.store');
+     Route::get('/{area}/edit', [\App\Http\Controllers\AreaController::class, 'edit'])->name('areas.edit');
+     Route::put('/{area}', [\App\Http\Controllers\AreaController::class, 'update'])->name('areas.update');
+     Route::delete('/{area}', [\App\Http\Controllers\AreaController::class, 'destroy'])->name('areas.destroy');
+
+    
+});
+
+
 //Route::resource('doctor', DoctorController::class);
 //Route::resource('area', AreaController::class);
 //Route::resource('medicine', MedicineController::class);

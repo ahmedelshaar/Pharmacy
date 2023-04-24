@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b18bf72555687abf6c743b4f15a075f",
+    "content-hash": "e81796351129a738aeea44adc2606ce3",
     "packages": [
         {
             "name": "brick/math",
@@ -6107,33 +6107,22 @@
         },
         {
             "name": "webpatser/laravel-countries",
-            "version": "dev-master",
+            "version": "1.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webpatser/laravel-countries.git",
-                "reference": "9d0cd970c764197a9966e4e864eba6253bbafa28"
+                "reference": "000d7aaa67a1eb488275feafe6ab74a6b7544e84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webpatser/laravel-countries/zipball/9d0cd970c764197a9966e4e864eba6253bbafa28",
-                "reference": "9d0cd970c764197a9966e4e864eba6253bbafa28",
+                "url": "https://api.github.com/repos/webpatser/laravel-countries/zipball/000d7aaa67a1eb488275feafe6ab74a6b7544e84",
+                "reference": "000d7aaa67a1eb488275feafe6ab74a6b7544e84",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
-            "default-branch": true,
             "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Webpatser\\Countries\\CountriesServiceProvider"
-                    ],
-                    "aliases": {
-                        "Countries": "Webpatser\\Countries\\CountriesFacade"
-                    }
-                }
-            },
             "autoload": {
                 "psr-0": {
                     "Webpatser\\Countries": "src/"
@@ -6170,7 +6159,7 @@
                 "issues": "https://github.com/webpatser/laravel-countries/issues",
                 "source": "https://github.com/webpatser/laravel-countries"
             },
-            "time": "2023-02-08T11:09:34+00:00"
+            "time": "2018-05-16T06:37:24+00:00"
         },
         {
             "name": "yajra/laravel-datatables-oracle",
@@ -8680,9 +8669,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "webpatser/laravel-countries": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

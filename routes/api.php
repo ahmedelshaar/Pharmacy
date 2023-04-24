@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\API\OrdersController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\AreaController;
 use App\Models\User;
+use App\Models\Area;
 use App\Notifications\WelcomeNotification;
 use Carbon\Carbon;
 use Illuminate\Auth\Events\Verified;
@@ -20,6 +22,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+//areas
+    Route::get('/areas', [AreaController::class, 'index']);
+    Route::get('/areas/{id}', [AreaController::class, 'show']);
+    Route::post('/areas', [AreaController::class, 'store']);
+    Route::put('/areas/{id}', [AreaController::class, 'update']);
+    Route::delete('/areas/{id}', [AreaController::class, 'destroy']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('users', UserController::class)->except(['create', 'edit']);
 });
