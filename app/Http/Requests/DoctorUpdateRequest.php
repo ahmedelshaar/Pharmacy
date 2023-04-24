@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\NameValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DoctorUpdateRequest extends FormRequest
@@ -22,12 +23,13 @@ class DoctorUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|alpha|min:2|max:255',
+            'name' => ['required','min:2','max:255', new NameValidationRule],
             'email' => 'required|string|email|max:255|unique:doctors,email,' . $this->doctor->id,
             'password' => 'nullable|string|min:6|confirmed',
             'image' => 'nullable|mimes:jpg,jpeg,png|max:2048',
             'national_id' => 'required|numeric|unique:doctors,national_id,' . $this->doctor->id,
             'pharmacy_id' => 'required|exists:pharmacies,id',
+            'is_banned' => 'nullable|in:1',
         ];
     }
 }

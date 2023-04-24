@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\NameValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DoctorStoreRequest extends FormRequest
@@ -24,7 +25,7 @@ class DoctorStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|alpha|min:2|max:255',
+            'name' => ['required','min:2','max:255', new NameValidationRule],
             'email' => 'required|string|email|max:255|unique:doctors,email',
             'password' => 'required|string|min:6|confirmed',
             'image' => 'required|mimes:jpg,jpeg,png|max:2048',

@@ -25,37 +25,16 @@ Route::get('/',function (){
    return view('admin.dashboard');
 })->name('dashboard');
 
-Route::prefix('/doctor')->group(function () {
-    Route::get('/', [\App\Http\Controllers\DoctorController::class, 'index'])->name('doctor.index');
-    Route::get('/create', [\App\Http\Controllers\DoctorController::class, 'create'])->name('doctor.create');
-    Route::post('/store', [\App\Http\Controllers\DoctorController::class, 'store'])->name('doctor.store');
-    Route::get('/{doctor}/edit', [\App\Http\Controllers\DoctorController::class, 'edit'])->name('doctor.edit');
-    Route::put('/{doctor}', [\App\Http\Controllers\DoctorController::class, 'update'])->name('doctor.update');
-    Route::delete('/{doctor}', [\App\Http\Controllers\DoctorController::class, 'destroy'])->name('doctor.destroy');
-    Route::get('/data', [\App\Http\Controllers\DoctorController::class, 'data'])->name('doctor.data');
-});
 
-//Route::resource('doctor', DoctorController::class);
-//Route::resource('area', AreaController::class);
-//Route::resource('medicine', MedicineController::class);
-//Route::resource('order', OrderController::class);
-//Route::resource('order_medicine', OrderMedicineController::class);
-//Route::resource('pharmacy', PharmacyController::class);
-//Route::resource('user_address', UserAddressController::class);
-
-
-Route::prefix('/medicine')->group(function () {
-    Route::get('/', [\App\Http\Controllers\MedicineController::class, 'index'])->name('medicine.index');
-    Route::get('/create', [\App\Http\Controllers\MedicineController::class, 'create'])->name('medicine.create');
-    Route::post('/store', [\App\Http\Controllers\MedicineController::class, 'store'])->name('medicine.store');
-    Route::get('/edit/{medicine}', [\App\Http\Controllers\MedicineController::class, 'edit'])->name('medicine.edit');
-    Route::put('/update/{medicine}', [\App\Http\Controllers\MedicineController::class, 'update'])->name('medicine.update');
-    Route::delete('/medicine/{medicine}', [\App\Http\Controllers\MedicineController::class, 'destroy'])->name('medicine.destroy');
-
-});
-
+Route::resource('doctor', DoctorController::class);
+Route::resource('medicine', MedicineController::class);
+Route::resource('area', AreaController::class);
+Route::resource('order', OrderController::class);
+Route::resource('order_medicine', OrderMedicineController::class);
+Route::resource('pharmacy', PharmacyController::class);
+Route::resource('user_address', UserAddressController::class);
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-  
+

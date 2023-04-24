@@ -43,7 +43,6 @@
                             <td>
                                 <a href="{{ route('medicine.edit', $row->id) }}" data-toggle="tooltip" data-original-title="Edit" class="edit btn btn-primary btn-sm">Edit</a>
                             </td>
-                            
                         </tr>
                     @endforeach
                 </tbody>

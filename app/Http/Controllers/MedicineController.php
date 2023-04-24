@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Medicine;
 use Illuminate\Http\Request;
 use DataTable;
+
 class MedicineController extends Controller
 {
     /**
@@ -14,7 +15,6 @@ class MedicineController extends Controller
     {
         $medicine = Medicine::all();
         return view('medicine.index', compact('medicine'));
-        
     }
 
     /**
@@ -37,13 +37,13 @@ class MedicineController extends Controller
             'price' => 'required|numeric',
             'cost' => 'required|numeric',
         ]);
-    
+
         // create new medicine
         $medicine = new Medicine;
         $medicine->name = $validatedData['name'];
         $medicine->price = $validatedData['price'];
         $medicine->cost = $validatedData['cost'];
-    
+
         if ($medicine->save()) {
             $medicine = Medicine::all();
             return view('medicine.index', compact('medicine'));
@@ -58,7 +58,7 @@ class MedicineController extends Controller
             ]);
         }
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -74,7 +74,7 @@ class MedicineController extends Controller
     {
         return view('medicine.edit', compact('medicine'));
     }
-    
+
     /**
      * Update the specified resource in storage.
      */
@@ -111,8 +111,6 @@ class MedicineController extends Controller
                 ->with('error', 'Failed to delete medicine');
         }
     }
-    
-    
 
 }
 

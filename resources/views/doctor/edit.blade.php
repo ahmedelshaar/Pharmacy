@@ -96,7 +96,6 @@
                             <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>
-
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -109,6 +108,19 @@
                                 @endforeach
                             </select>
                             @error('pharmacy_id')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" id="is_banned" type="checkbox" value="1" name="is_banned" @if($doctor->is_banned) checked @endif>
+                                <label class="form-check-label" for="is_banned">
+                                    Banned
+                                </label>
+                            </div>
+                            @error('is_banned')
                             <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
                         </div>

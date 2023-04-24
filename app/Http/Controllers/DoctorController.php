@@ -63,6 +63,7 @@ class DoctorController extends Controller
     public function update(DoctorUpdateRequest $request, Doctor $doctor)
     {
         $doctor->fill($request->except('image', 'password'));
+        $doctor->is_banned = $request->is_banned ?? 0;
         if ($request->password) {
             $doctor->password = Hash::make($request->password);
         }
