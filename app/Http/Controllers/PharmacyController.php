@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePharmacyRequest;
 use App\Models\Pharmacy;
 use Illuminate\Http\Request;
 use App\Models\Area;
@@ -19,7 +20,8 @@ class PharmacyController extends Controller
                  $query->select('id', 'name');
              }])->get())->toJson();
          }
-         return view('pharmacy.index');
+
+        return view('pharmacy.index');
     }
 
     /**
@@ -28,7 +30,7 @@ class PharmacyController extends Controller
     public function create()
     {
         $areas = Area::all();
-        return view('pharmacy.create',["areas" => $areas]);
+        return view('pharmacy.create', compact('areas'));
     }
 
     /**
@@ -38,9 +40,9 @@ class PharmacyController extends Controller
     {
         $avatar = $request->file('avatar');
         $imageName = time() . '.' . $avatar ->extension();
-        $avatar ->move(public_path('images'), $imageName);
-        Pharmacy::create($request->except('avatar') + ['avatar' => $imageName]);
-        return redirect()->route('pharmacy.index');
+        $avatar ->move(public_path('images/pharmacies'), $imageName);
+        Pharmacy::create($request->except( 'avatar') + ['avatar' => $imageName]);
+        return redirect()->route('pharmacy.index')->with('success', 'New Pharmacy created Successfully!');
     }
 
 
@@ -58,26 +60,23 @@ class PharmacyController extends Controller
     public function edit(Pharmacy $pharmacy)
     {
         $areas = Area::all();
-        return view('pharmacy.edit', compact('pharmacy', 'areas'));
+        return view('pharmacy.edit', compact(['pharmacy', 'areas']));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Pharmacy $pharmacy)
+    public function update(UpdatePharmacyRequest $request, Pharmacy $pharmacy)
     {
         $pharmacy->fill($request->except('avatar'));
-        if ($request->hasFile('avatar')) {
+        if($request->hasFile('avatar')){
             $avatar = $request->file('avatar');
             $imageName = time() . '.' . $avatar ->extension();
-            $avatar ->move(public_path('images'), $imageName);
-            if (file_exists(public_path($pharmacy->avatar))) {
-                unlink(public_path($request->avatar));
-            }
+            $avatar ->move(public_path('images/pharmacies'), $imageName);
             $pharmacy->avatar = $imageName;
         }
         $pharmacy->save();
-        return redirect()->route('pharmacy.index')->with('success', 'Pharmacy updated successfully');
+        return redirect()->route('pharmacy.index')->with('success', 'Pharmacy updated Successfully!');
     }
 
     /**
@@ -86,7 +85,8 @@ class PharmacyController extends Controller
     public function destroy(Pharmacy $pharmacy)
     {
         $pharmacy->delete();
-        return redirect()->route('pharmacy.index')->with('success', 'Pharmacy deleted successfully');
+        return redirect()->route('pharmacy.index');
     }
+
 
 }
