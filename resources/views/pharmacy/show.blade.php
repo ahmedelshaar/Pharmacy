@@ -13,7 +13,7 @@ Show Pharmacy
     <div class="card-body">
         <h5 class="card-title">Pharmacy Name: {{$pharmacy['name']}}</h5>
         <p class="card-text">Priority: {{$pharmacy['priority']}}</p>
-        <p class="card-text">Area: {{$pharmacy['area_id']}}</p>
+        <p class="card-text">Area: {{$pharmacy->area->name}}</p>
     </div>
 </div>
 @if ($pharmacy->avatar)
@@ -22,7 +22,7 @@ Show Pharmacy
         <h1>Pharmacy Image</h1>
     </div>
     <div class="card-body">
-        <img src="{{ asset('images/pharmacies' . $pharmacy->avatar) }}" alt="Pharmacy Image" class="img-fluid">
+        <img src="{{ asset($pharmacy->avatar) }}" alt="Pharmacy Image" class="img-fluid">
     </div>
 </div>
 </div>

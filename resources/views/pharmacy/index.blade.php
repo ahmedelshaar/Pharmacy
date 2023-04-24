@@ -53,7 +53,6 @@
                     data: 'avatar',
                     name: 'image',
                     render: function (data, type, full, meta) {
-                        {{--return '<img src="' + {{ asset('images/pharmacy/:image') }} + '" height="50"/>'.replace(':image', data);--}}
                             return '<img src="' + '{{ asset('') }}' + data + '" height="50"/>';
                     }
                 },

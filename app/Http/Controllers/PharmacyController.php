@@ -40,8 +40,9 @@ class PharmacyController extends Controller
     {
         $avatar = $request->file('avatar');
         $imageName = time() . '.' . $avatar ->extension();
-        $avatar ->move(public_path('images/pharmacies'), $imageName);
-        Pharmacy::create($request->except( 'avatar') + ['avatar' => $imageName]);
+        $avatar->move(public_path('images/pharmacies'), $imageName);
+        $image = 'images/pharmacies/' . $imageName;
+        Pharmacy::create($request->except( 'avatar') + ['avatar' => $image]);
         return redirect()->route('pharmacy.index')->with('success', 'New Pharmacy created Successfully!');
     }
 
@@ -73,7 +74,7 @@ class PharmacyController extends Controller
             $avatar = $request->file('avatar');
             $imageName = time() . '.' . $avatar ->extension();
             $avatar ->move(public_path('images/pharmacies'), $imageName);
-            $pharmacy->avatar = $imageName;
+            $pharmacy->avatar = 'images/pharmacies/' . $imageName;
         }
         $pharmacy->save();
         return redirect()->route('pharmacy.index')->with('success', 'Pharmacy updated Successfully!');

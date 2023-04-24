@@ -36,9 +36,9 @@ Route::prefix('/doctor')->group(function () {
 });
 
 //Route::resource('doctor', DoctorController::class);
-//Route::resource('area', AreaController::class);
+Route::resource('area', AreaController::class);
 //Route::resource('medicine', MedicineController::class);
-//Route::resource('order', OrderController::class);
+Route::resource('order', OrderController::class);
 //Route::resource('order_medicine', OrderMedicineController::class);
 Route::resource('pharmacy', PharmacyController::class);
 //Route::resource('user_address', UserAddressController::class);

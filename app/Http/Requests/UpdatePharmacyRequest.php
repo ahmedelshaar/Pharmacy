@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 use App\Http\Models\Area;
 
 
+use App\Rules\NameValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatePharmacyRequest extends FormRequest
@@ -24,24 +25,16 @@ class UpdatePharmacyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'name' => 'required|min:5',
-            'priority'=>'required',
+            'name' => ['required','min:5', new NameValidationRule],
+            'priority'=>'required|in:1,2,3,4,5',
             'area_id' => 'required|exists:App\Models\Area,id',
-            'avatar' => 'required|image|mimes:jpeg,jpg|max:2048',
+            'avatar' => 'nullable|image|max:2048',
         ];
     }
 
     public function messages(): array
     {
         return [
-            //
-            'name.required' => 'Title is required',
-            'name.min' => 'Title must be at least 5 characters',
-            'description.required' => 'description is required',
-            'description.min' => 'description must be at least 10 characters',
-            'area_id.required' => 'Area is required',
-            'area_id.exists' => 'Area does not exist',
         ];
     }
 }
