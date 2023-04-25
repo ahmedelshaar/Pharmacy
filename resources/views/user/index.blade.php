@@ -29,7 +29,6 @@
                     <th>Phone</th>
                     <th>Gender</th>
                     <th>Image</th>
-                    <th>Last Login</th>
                     <th>Show</th>
                     <th>Edit</th>
                     <th>Delete</th>
@@ -57,12 +56,6 @@
                     name: 'image',
                     render: function (data, type, full, meta) {
                         return '<img src="' + '{{ asset('') }}' + data + '" height="50"/>';
-                    }
-                },
-                {
-                    data: 'last_login',
-                    render: function (data, type, full, meta) {
-                        return new Date(data).toLocaleDateString();
                     }
                 },
                 {

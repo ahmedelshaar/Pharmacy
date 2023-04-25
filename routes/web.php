@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderMedicineController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\UserAddressController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/', function () {
+    return view('admin.dashboard');
+})->name('dashboard');
 
 Route::resource('doctor', DoctorController::class);
 Route::resource('area', AreaController::class);
@@ -28,7 +32,7 @@ Route::resource('order', OrderController::class);
 Route::resource('order_medicine', OrderMedicineController::class);
 Route::resource('pharmacy', PharmacyController::class);
 Route::resource('user_address', UserAddressController::class);
-Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name('user.index');
+Route::resource('/user', UserController::class);
 
 Auth::routes();
 
