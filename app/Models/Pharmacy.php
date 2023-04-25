@@ -22,4 +22,6 @@ class Pharmacy extends Model
         return $this->belongsTo(Area::class);
     }
 
+
+
 }
