@@ -13,20 +13,7 @@ class UserController extends Controller
 
     public function index()
     {
-        //Get All Users
-        $users = User::paginate(10);
-//        $users = User::all();
-        return response()->json($users);
-    }
-
-    public function show(string $id)
-    {
-        //User By ID
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json('User Not Found');
-        }
-        return response()->json($user);
+        return response()->json(Auth::user());
     }
 
 
@@ -57,9 +44,9 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-
-    public function update(UpdateUserRequest $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
+        $user->fill($request->except('email', 'image'));
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imgName = time() . '.' . $image->getClientOriginalExtension();
@@ -70,32 +57,18 @@ class UserController extends Controller
             if (file_exists($oldImage)) {
                 @unlink($oldImage);
             }
-            $request->merge(['image' => $imgName]);
+            $user->image = $imgName;
         }
-
-// User can't update email
-
-        $request->merge(['email' => Auth::user()->email]);
-        $user = Auth::user()->update($request->all());
-
-
-        return response()->json(Auth::user());
+        $user->save();
+        return response()->json($user);
     }
 
 
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        $user = User::find($id);
-//        If User Not Found
-        if (!$user) {
-            return response()->json('User Not Found');
-        }
-//        if User has Orders
         if ($user->orders()->exists()) {
-//            return response()->json($user->orders);
             return response()->json('User Has Orders Can\'t Delete');
         }
-//        If User has Image Delete it
         if ($user->image) {
             $oldImage = public_path('/images/') . $user->image;
             if (file_exists($oldImage)) {
@@ -103,7 +76,7 @@ class UserController extends Controller
             }
         }
         $user->delete();
-        return response()->json('User Deleted Successfully');
+        return response()->json(['message' => 'User Deleted Successfully']);
     }
 
 
