@@ -3,6 +3,7 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Webpatser\Countries\Countries;
 
 class Area extends Model
 {
@@ -13,6 +14,6 @@ class Area extends Model
     ];
     public function country()
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Countries::class);
     }
 }

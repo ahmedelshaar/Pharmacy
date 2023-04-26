@@ -50,7 +50,8 @@ class DoctorController extends Controller
         $request->image->move(public_path('images/doctors'), $imageName);
         $image = 'images/doctors/' . $imageName;
         $data = $request->except('image', 'password') + ['image' => $image, 'password' => Hash::make($request->password)];
-        Doctor::create($data);
+        $doctor = Doctor::create($data);
+        $doctor->assignRole('doctor');
         return redirect()->route('doctor.index')->with('success', 'New Doctor created Successfully!');
     }
 

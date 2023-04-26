@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AreaStoreRequest;
+use App\Http\Requests\AreaUpdateRequest;
+use App\Http\Requests\StoreAreaRequest;
 use App\Models\Area;
 use Illuminate\Http\Request;
+use Webpatser\Countries\Countries;
 
 
 class AreaController extends Controller
@@ -11,12 +15,14 @@ class AreaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $area = Area::all();
-       // $areas = Area::with('country')->get();
-        return view('areas.index', ['area' => $area]);
-
+        if ($request->ajax()) {
+            return datatables()->collection(Area::with(['country' => function($query) {
+                $query->select('id', 'name');
+            }])->get())->toJson();
+        }
+        return view('area.index');
     }
 
     /**
@@ -24,23 +30,17 @@ class AreaController extends Controller
      */
     public function create()
     {
-        $allAreas = Area::all();
-        return view('areas.create', [
-            'areas' => $allAreas
-        ]);
+        $countries = Countries::select('id', 'name')->get();
+        return view('area.create', compact('countries'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AreaStoreRequest $request)
     {
-        $data= $request->all();
-        $item=Area::create([
-            'name'=>$data['name'],
-            'country_id'=>$data['country_id'],            
-        ]);
-        return redirect()->route('areas.index');
+        Area::create($request->all());
+        return redirect()->route('area.index');
     }
 
     /**
@@ -48,7 +48,7 @@ class AreaController extends Controller
      */
     public function show(Area $area)
     {
-        //
+        return view('area.show', compact('area'));
     }
 
     /**
@@ -56,19 +56,17 @@ class AreaController extends Controller
      */
     public function edit(Area $area)
     {
-        return view('areas.edit', ['area' => $area]);
+        $countries = Countries::select('id', 'name')->get();
+        return view('area.edit', compact('area', 'countries'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Area $area)
+    public function update(AreaUpdateRequest $request, Area $area)
     {
-        $area->update([
-            'name' => $request->name,
-            'country_id' => $request->country_id,
-        ]);
-        return redirect()->route('areas.index');
+        $area->update($request->all());
+        return redirect()->route('area.index');
     }
 
     /**
@@ -77,6 +75,6 @@ class AreaController extends Controller
     public function destroy(Area $area)
     {
         $area->delete();
-        return redirect()->route('areas.index');
+        return redirect()->route('area.index');
     }
 }

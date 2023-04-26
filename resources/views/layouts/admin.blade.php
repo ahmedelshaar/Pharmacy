@@ -188,6 +188,14 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mx-auto">
+                    @include('includes.success')
+                    @include('includes.error')
+                </div>
+            </div>
+        </div>
         @yield('content')
     </div>
     <!-- /.content-wrapper -->

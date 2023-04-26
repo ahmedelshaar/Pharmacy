@@ -86,7 +86,7 @@ class PharmacyController extends Controller
     public function destroy(Pharmacy $pharmacy)
     {
         $pharmacy->delete();
-        return redirect()->route('pharmacy.index');
+        return redirect()->route('pharmacy.index')->with('success', 'Pharmacy deleted Successfully!');
     }
 
 

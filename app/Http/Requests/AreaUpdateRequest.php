@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAreaRequest extends FormRequest
+class AreaUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,18 +22,14 @@ class StoreAreaRequest extends FormRequest
     public function rules(): array
     {
         return [
-          
-                'name' => ['required', 'unique:areas','min:5'],
-                'country_id' => ['required', 'min:1'] 
+            'name' => ['required', 'min:3', 'unique:areas,name,' . $this->area->id],
+            'country_id' => ['required', 'exists:countries,id'],
         ];
-
     }
-    
-    public function messages(){
-            
-        return[
-            'name.required'=>'my custom message',
-            'country_id.min'=>'my custom message for min rule',
+
+    public function messages(): array
+    {
+        return [
         ];
-        }
+    }
 }

@@ -23,7 +23,16 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 //    User Login Function
     public function userLogin(Request $request){
-
+        $this->validate($request,[
+            'email'=>'required|email',
+            'password'=>'required|min:6'
+        ]);
+        if (Auth::guard('web')->attempt(['email'=>$request->email,'password'=>$request->password],$request->remember)){
+            if (Auth::user()->hasRole('doctor')){
+                return redirect()->intended(route('dashboard'));
+            }
+        }
+        return redirect()->back()->withInput($request->only('email','remember'));
     }
 
     /**

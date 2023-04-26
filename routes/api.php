@@ -26,11 +26,11 @@ use Illuminate\Support\Str;
 */
 
 //areas
-    Route::get('/areas', [AreaController::class, 'index']);
-    Route::get('/areas/{id}', [AreaController::class, 'show']);
-    Route::post('/areas', [AreaController::class, 'store']);
-    Route::put('/areas/{id}', [AreaController::class, 'update']);
-    Route::delete('/areas/{id}', [AreaController::class, 'destroy']);
+Route::get('/areas', [AreaController::class, 'index']);
+Route::get('/areas/{id}', [AreaController::class, 'show']);
+Route::post('/areas', [AreaController::class, 'store']);
+Route::put('/areas/{id}', [AreaController::class, 'update']);
+Route::delete('/areas/{id}', [AreaController::class, 'destroy']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('users', UserController::class)->except(['create', 'edit']);
@@ -64,7 +64,6 @@ Route::post('/sanctum/token', function (Request $request) {
             'token' => $token
         ]);
     }
-
 
     return response()->json([
         'message' => 'Login successfully',

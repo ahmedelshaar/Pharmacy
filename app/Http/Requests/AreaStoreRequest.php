@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAreaRequest extends FormRequest
+class AreaStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,17 +22,14 @@ class UpdateAreaRequest extends FormRequest
     public function rules(): array
     {
         return [
-              //Validate Area Updated Data to be optional
-              'name' => 'sometimes|string|max:255',
-              'country_id' => 'sometimes|numeric|min:1',
-              
+            'name' => ['required', 'unique:areas','min:3'],
+            'country_id' => ['required', 'exists:countries,id'],
         ];
+
     }
-    
-    public function messages(): array
-    {
-        return [
-            'name.string' => __('validation.string', ['attribute' => 'name']),
+
+    public function messages(){
+        return[
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Doctor;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -16,5 +17,6 @@ class RoleSeeder extends Seeder
         Role::create(['name' => 'admin']);
         Role::create(['name' => 'owner']);
         Role::create(['name' => 'doctor']);
+
     }
 }
