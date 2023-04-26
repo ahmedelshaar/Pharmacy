@@ -49,6 +49,7 @@
                 {
                     data: 'avatar',
                     name: 'image',
+                    orderable: false,
                     render: function (data, type, full, meta) {
                             return '<img src="' + '{{ asset('') }}' + data + '" height="50"/>';
                     }

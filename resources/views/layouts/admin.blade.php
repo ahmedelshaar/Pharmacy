@@ -60,6 +60,12 @@
                     <i class="fas fa-expand-arrows-alt"></i>
                 </a>
             </li>
+            <!-- dark mode -->
+            <li class="nav-item">
+                <a class="nav-link" id="dark-mode" role="button">
+                    <i class="fas fa-moon"></i>
+                </a>
+            </li>
         </ul>
     </nav>
     <!-- /.navbar -->
@@ -123,6 +129,7 @@
 <script src="{{ asset('plugins/summernote/summernote-bs4.min.js') }}"></script>
 <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
 <script src="{{ asset('dist/js/adminlte.js') }}"></script>
+<script src="{{ asset('dist/js/custom.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
 @yield('scripts')
