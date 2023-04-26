@@ -25,8 +25,8 @@ class UpdateUserRequest extends FormRequest
             //Validate User Updated Data to be optional
             'name' => 'sometimes|string|max:255',
             'email' => 'exclude',
-            'password' => 'sometimes|string|min:6',
-            'national_id' => 'sometimes|numeric|unique:users',
+            'password' => 'nullable|string|min:6|confirmed',
+            'national_id' => 'sometimes|numeric|unique:users,national_id,' . $this->user->id,
             'phone' => 'sometimes|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'image' => 'sometimes|image|mimes:png,jpg|max:4048',
             'gender' => 'sometimes|in:Male,Female,Other',

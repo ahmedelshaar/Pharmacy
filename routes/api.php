@@ -1,12 +1,10 @@
 <?php
 
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\OrdersController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\AreaController;
 use App\Models\User;
-use App\Models\Area;
 use App\Notifications\WelcomeNotification;
-use Carbon\Carbon;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -25,24 +23,30 @@ use Illuminate\Support\Str;
 |
 */
 
+<<<<<<< HEAD
 //areas
 Route::get('/areas', [AreaController::class, 'index']);
 Route::get('/areas/{id}', [AreaController::class, 'show']);
 Route::post('/areas', [AreaController::class, 'store']);
 Route::put('/areas/{id}', [AreaController::class, 'update']);
 Route::delete('/areas/{id}', [AreaController::class, 'destroy']);
+=======
+>>>>>>> 9cd762e95c776e1a66aabe9257140e5ff8b35f76
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::resource('users', UserController::class)->except(['create', 'edit']);
-});
-//Group Routes for orders
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
+    Route::resource('users', UserController::class)->except(['create', 'edit', 'show', 'update', 'destroy']);
+    Route::put('/users', [UserController::class, 'update']);
+    Route::delete('/users', [UserController::class, 'destroy']);
+//    Orders
     Route::get('/orders', [OrdersController::class, 'index']);
 });
 
-// Sanctum register route
 
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/sanctum/token', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
+<<<<<<< HEAD
 // Sanctum login route
 Route::post('/sanctum/token', function (Request $request) {
     $request->validate([
@@ -70,20 +74,36 @@ Route::post('/sanctum/token', function (Request $request) {
         'token' => $token
     ]);
 });
+=======
+>>>>>>> 9cd762e95c776e1a66aabe9257140e5ff8b35f76
 
 // Verify Email
 Route::get('/email/verify/{id}/{hash}', function (Request $request) {
-    $user = User::find($request->id);
-    if ($user->hasVerifiedEmail()) {
-        return response()->json(['message' => 'Email already verified!']);
+// Auth::User verify his own email not others
+    if ($request->route('id') != $request->user()->getKey()) {
+        return response()->json([
+            'message' => 'Invalid Verification Link'
+        ], 403);
     }
-
-    if ($user->markEmailAsVerified()) {
-        event(new Verified($user));
+    if (!hash_equals((string)$request->route('hash'), sha1($request->user()->getEmailForVerification()))) {
+        return response()->json([
+            'message' => 'Invalid Verification Link'
+        ], 403);
     }
-    $user->notify(new WelcomeNotification($user));
+    if ($request->user()->hasVerifiedEmail()) {
+        return response()->json([
+            'message' => 'Email already verified'
+        ]);
+    }
+    if ($request->user()->markEmailAsVerified()) {
+        event(new Verified($request->user()));
+    }
+//    Send Welcome Notification
+    $request->user()->notify(new WelcomeNotification($request->user()));
 
-    return response()->json(['message' => 'Email verified successfully!']);
+    return response()->json([
+        'message' => 'Email successfully verified'
+    ]);
 })->middleware(['auth:sanctum', 'signed'])->name('verification.verify');
 
 // Resend Email Verification
