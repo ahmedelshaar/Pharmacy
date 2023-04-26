@@ -23,21 +23,11 @@ use Illuminate\Support\Str;
 |
 */
 
-<<<<<<< HEAD
-//areas
-Route::get('/areas', [AreaController::class, 'index']);
-Route::get('/areas/{id}', [AreaController::class, 'show']);
-Route::post('/areas', [AreaController::class, 'store']);
-Route::put('/areas/{id}', [AreaController::class, 'update']);
-Route::delete('/areas/{id}', [AreaController::class, 'destroy']);
-=======
->>>>>>> 9cd762e95c776e1a66aabe9257140e5ff8b35f76
 
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::resource('users', UserController::class)->except(['create', 'edit', 'show', 'update', 'destroy']);
     Route::put('/users', [UserController::class, 'update']);
     Route::delete('/users', [UserController::class, 'destroy']);
-//    Orders
     Route::get('/orders', [OrdersController::class, 'index']);
 });
 
@@ -46,7 +36,6 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/sanctum/token', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-<<<<<<< HEAD
 // Sanctum login route
 Route::post('/sanctum/token', function (Request $request) {
     $request->validate([
@@ -74,8 +63,6 @@ Route::post('/sanctum/token', function (Request $request) {
         'token' => $token
     ]);
 });
-=======
->>>>>>> 9cd762e95c776e1a66aabe9257140e5ff8b35f76
 
 // Verify Email
 Route::get('/email/verify/{id}/{hash}', function (Request $request) {
