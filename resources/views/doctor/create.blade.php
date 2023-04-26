@@ -1,20 +1,18 @@
 @extends('layouts.admin')
 
-@section('title')
-    Create Doctor
-@endsection
+@section('title', 'Create Doctor')
 
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Doctors</h1>
+                    <h1>Create Doctor</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                        <li class="breadcrumb-item active">Doctor</li>
+                        <li class="breadcrumb-item active">Create Doctor</li>
                     </ol>
                 </div>
             </div>
@@ -22,7 +20,7 @@
     </section>
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('doctor.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('doctor.store') }}" method="POST" enctype="multipart/form-data" class="need-">
                 @csrf
                 <div class="row">
                     <div class="col-md-6">
@@ -51,29 +49,32 @@
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" id="password" name="password"
-                                   class="form-control " required>
-                            @if ($errors->has('password'))
-                                sopvkpv
+                                   class="form-control @error('password') is-invalid @enderror" required>
+                            @error('password')
                                 <span class="invalid-feedback">{{ $errors->first('password') }}</span>
-                            @endif
+                            @enderror
+
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="password_confirmation">Password confirm</label>
                             <input type="password" id="password_confirmation" name="password_confirmation"
-                                   class="form-control" required/>
+                                   class="form-control @error('password_confirmation') is-invalid @enderror" required/>
+                            @error('password_confirmation')
+                                <span class="invalid-feedback">{{ $errors->first('password_confirmation') }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="image">image</label>
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 @error('image') is-invalid @enderror">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Image</span>
                                 </div>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="image" name="image" required>
+                                    <input type="file" class="custom-file-input @error('image') is-invalid @enderror" id="image" name="image" required>
                                     <label class="custom-file-label" for="image">Choose Image</label>
                                 </div>
                             </div>
@@ -110,7 +111,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </form>
         </div>
     </div>

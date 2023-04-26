@@ -22,6 +22,11 @@ class Pharmacy extends Model
         return $this->belongsTo(Area::class);
     }
 
+    public function owner()
+    {
+        return $this->hasOne(Doctor::class)->role('owner');
+    }
+
 
 
 }

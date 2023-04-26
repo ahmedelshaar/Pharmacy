@@ -16,9 +16,7 @@ class MedicineController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()) {
-            return datatables()->collection(Medicine::with(['pharmacy' => function($query) {
-                $query->select('id', 'name');
-            }])->get())->toJson();
+            return datatables()->collection(Medicine::all())->toJson();
         }
         return view('medicine.index');
     }
@@ -72,7 +70,10 @@ class MedicineController extends Controller
     public function destroy(Medicine $medicine)
     {
         $medicine->delete();
-        return redirect()->route('medicine.index')->with('success', 'Medicine deleted successfully');
+        return response()->json([
+            'success' => true,
+            'message' => 'Medicine deleted successfully'
+        ]);
     }
 
 }

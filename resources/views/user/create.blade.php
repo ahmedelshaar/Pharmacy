@@ -40,7 +40,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="text" id="email" name="email"
+                            <input type="email" id="email" name="email"
                                    class="form-control @error('email') is-invalid @enderror"
                                    value="{{ old('email') }}" required autofocus>
                             @error('email')
@@ -64,18 +64,23 @@
                         <div class="form-group">
                             <label for="password_confirmation">Password confirm</label>
                             <input type="password" id="password_confirmation" name="password_confirmation"
-                                   class="form-control" required autofocus/>
+                                   class="form-control @error('password_confirmation') is-invalid @enderror" required
+                                   autofocus/>
+                            @error('password_confirmation')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="image">image</label>
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 @error('image') is-invalid @enderror">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Image</span>
                                 </div>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="image" name="image">
+                                    <input type="file" class="custom-file-input @error('image') is-invalid @enderror"
+                                           id="image" name="image">
                                     <label class="custom-file-label" for="image">Choose Image</label>
                                 </div>
                                 @error('image')
@@ -121,9 +126,9 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="gender">Gender</label>
-                            <select name="gender" id="gender" class="form-control">
-                                <option value=" Male">Male
-                                </option>
+                            <select name="gender" id="gender" class="form-control" required>
+                                <option selected>Choose Gender</option>
+                                <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                                 <option value="Other">Other</option>
                             </select>

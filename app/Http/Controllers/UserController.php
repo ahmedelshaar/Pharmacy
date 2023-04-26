@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    //index
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -19,40 +18,22 @@ class UserController extends Controller
         return view('user.index');
     }
 
-    //create
-
     public function store(StoreUserRequest $request)
     {
-        $imgName = null;
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imgName = time() . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('/images/users');
-            $image->move($destinationPath, $imgName);
-        }
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'image' => '/images/users/' . $imgName,
-            'national_id' => $request->national_id,
-            'phone' => $request->phone,
-            'birth_date' => $request->birth_date,
-            'gender' => $request->gender,
-            'last_login' => now(),
-        ]);
+        $image = $request->file('image');
+        $imgName = time() . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('images/users'), $imgName);
+        $image = 'images/users/' . $imgName;
+        $request->merge(['password' => Hash::make($request->password), 'image' => $image]);
+        $user = User::create($request->all());
         $user->sendEmailVerificationNotification();
         return redirect()->route('user.index')->with('success', 'User Created Successfully');
     }
-
-    //store
 
     public function create()
     {
         return view('user.create');
     }
-
-    //show
 
     public function show(User $user)
     {
@@ -73,7 +54,7 @@ class UserController extends Controller
     //update
     public function update(UpdateUserRequest $request, User $user)
     {
-        $user->fill($request->except('image', 'email', 'password'));
+        $user->fill($request->except('image', 'password'));
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imgName = time() . '.' . $image->getClientOriginalExtension();
@@ -94,13 +75,13 @@ class UserController extends Controller
     //destroy
     public function destroy(User $user)
     {
-        if ($user->orders()->exists()) {
-            return redirect()->route('user.index')->with('error', 'User has orders can\'t delete');
-        }
         if (file_exists(public_path($user->image))) {
             @unlink(public_path($user->image));
         }
         $user->delete();
-        return redirect()->route('user.index')->with('success', 'User Deleted Successfully');
+        return response()->json([
+            'success' => true,
+            'message' => 'Pharmacy deleted successfully'
+        ]);
     }
 }

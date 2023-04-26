@@ -25,7 +25,7 @@ use Illuminate\Support\Str;
 
 
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
-    Route::resource('users', UserController::class)->except(['create', 'edit', 'show', 'update', 'destroy']);
+//    Route::resource('users', UserController::class)->except(['create', 'edit', 'show', 'update', 'destroy']);
     Route::put('/users', [UserController::class, 'update']);
     Route::delete('/users', [UserController::class, 'destroy']);
     Route::get('/orders', [OrdersController::class, 'index']);

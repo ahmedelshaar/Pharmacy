@@ -24,7 +24,7 @@ class MedicineUpdateRequest extends FormRequest
         return [
             'name' => 'required|string|unique:medicines,name,' . $this->medicine->id,
             'price' => 'required|numeric',
-            'cost' => 'required|numeric',
+            'cost' => 'required|numeric|lte:price',
         ];
     }
 }

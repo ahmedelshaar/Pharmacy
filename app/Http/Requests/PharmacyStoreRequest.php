@@ -3,11 +3,10 @@
 namespace App\Http\Requests;
 use App\Http\Models\Area;
 
-
 use App\Rules\NameValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePharmacyRequest extends FormRequest
+class PharmacyStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,18 +25,18 @@ class UpdatePharmacyRequest extends FormRequest
     {
         return [
             'name' => ['required','min:5', new NameValidationRule],
-            'priority'=>'required|in:1,2,3,4,5',
-            'area_id' => 'required|exists:App\Models\Area,id',
-            'avatar' => 'nullable|image|max:2048',
+            'priority'=>'required',
+            'area_id' => 'required|exists:areas,id',
+            'avatar' => 'required|image|max:2048',
             'doctor_name' => ['required','min:2','max:255', new NameValidationRule],
-            'email' => 'required|string|email|max:255|unique:doctors,email,' . $this->pharmacy->owner->id,
-            'password' => 'nullable|string|min:6|confirmed',
-            'image' => 'nullable|mimes:jpg,jpeg,png|max:2048',
-            'national_id' => 'required|numeric|unique:doctors,national_id,' . $this->pharmacy->owner->id,
+            'email' => 'required|string|email|max:255|unique:doctors,email',
+            'password' => 'required|string|min:6|confirmed',
+            'image' => 'required|mimes:jpg,jpeg,png|max:2048',
+            'national_id' => 'required|numeric|unique:doctors,national_id',
         ];
     }
 
-    public function messages(): array
+    public function message(): array
     {
         return [
         ];

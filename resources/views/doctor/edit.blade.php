@@ -1,8 +1,6 @@
 @extends('layouts.admin')
 
-@section('title')
-    Edit Doctor: {{ $doctor->name }}
-@endsection
+@section('title', 'Edit Doctor: ' . $doctor->name)
 
 @section('content')
     <section class="content-header">
@@ -65,7 +63,10 @@
                         <div class="form-group">
                             <label for="password_confirmation">Password confirm</label>
                             <input type="password" id="password_confirmation" name="password_confirmation"
-                                   class="form-control"/>
+                                   class="form-control @error('password_confirmation') is-invalid @enderror"/>
+                            @error('password_confirmation')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -115,7 +116,8 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <div class="form-check">
-                                <input class="form-check-input" id="is_banned" type="checkbox" value="1" name="is_banned" @if($doctor->is_banned) checked @endif>
+                                <input class="form-check-input" id="is_banned" type="checkbox" value="1"
+                                       name="is_banned" @if($doctor->is_banned) checked @endif>
                                 <label class="form-check-label" for="is_banned">
                                     Banned
                                 </label>
@@ -126,7 +128,7 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-success">Submit</button>
+                <button class="btn btn-success">Update</button>
             </form>
         </div>
     </div>

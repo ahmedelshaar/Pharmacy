@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('phone');
             $table->enum('gender', ['Male', 'Female', 'Other']);
             $table->date('birth_date');
-            $table->date('last_login');
+            $table->date('last_login')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

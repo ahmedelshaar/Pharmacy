@@ -22,16 +22,14 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //Validate User Added Data
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|min:3',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'national_id' => 'required|numeric|unique:users',
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'image' => 'required|image|mimes:png,jpg|max:4048',
             'gender' => 'required|in:Male,Female,Other',
-            'birth_date' => 'required|date',
-
+            'birth_date' => 'required|date|before:today',
         ];
     }
 

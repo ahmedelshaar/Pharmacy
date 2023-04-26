@@ -24,7 +24,7 @@ class MedicineStoreRequest extends FormRequest
         return [
             'name' => 'required|string|unique:medicines',
             'price' => 'required|numeric',
-            'cost' => 'required|numeric',
+            'cost' => 'required|numeric|lte:price',
         ];
     }
 }

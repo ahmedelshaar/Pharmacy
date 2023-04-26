@@ -30,13 +30,13 @@ Route::resource('area', AreaController::class);
 Route::resource('order', OrderController::class);
 Route::resource('pharmacy', PharmacyController::class);
 
-Route::resource('medicine', MedicineController::class);
+Route::resource('medicine', MedicineController::class)->except(['show']);
 Route::resource('order', OrderController::class);
 Route::resource('order_medicine', OrderMedicineController::class);
 Route::resource('pharmacy', PharmacyController::class);
 Route::resource('user_address', UserAddressController::class);
-Route::resource('/user', UserController::class);
+Route::resource('user', UserController::class);
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

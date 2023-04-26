@@ -1,32 +1,32 @@
 @extends('layouts.admin')
-
+@section('title', 'All Area')
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Areas</h3>
-                    <div class="card-tools">
-                        <a href="{{ route('area.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add a
-                            New Area</a>
-                    </div>
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Areas</h1>
                 </div>
-                <div class="card-body">
-                    <table class="table mt-4" id="area-table">
-                        <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Country</th>
-                            <th scope="col">Created At</th>
-                            <th scope="col">Edit</th>
-                            <th scope="col">Delete</th>
-                            <th scope="col">Show</th>
-                        </tr>
-                        </thead>
-                    </table>
+                <div class="col-sm-6 d-flex justify-content-end">
+                    <a href="{{ route('area.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add a New
+                        Area</a>
                 </div>
             </div>
+        </div>
+    </section>
+    <div class="card">
+        <div class="card-body">
+            <table class="table mt-4" id="area-table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Country</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+            </table>
         </div>
     </div>
 @endsection
@@ -47,27 +47,65 @@
                     }
                 },
                 {
-                    data: 'id',
-                    name: 'edit',
+                    data: 'id', orderable: false, searchable: false,
                     render: function (data, type, full, meta) {
-                        return '<a href="{{ route('area.edit', ':id') }}" class="btn btn-primary btn-sm">Edit</a>'.replace(':id', data);
-                    }
+                        return `
+                        <a href="{{ route('area.show', ':id') }}" class="btn btn-success btn-sm">
+                        <i class="fas fa-eye"></i>
+                        Show</a>
+                        <a class="btn btn-info btn-sm" href="{{route('area.edit',':id')}}">
+                            <i class="fas fa-pencil-alt"></i>
+                            Edit
+                        </a>
+                        <button class="btn btn-danger btn-sm swal-delete" onclick="sweetDelete(event)"
+                                data-id="{{ ':id' }}">
+                            <i class="fas fa-trash-alt"></i> Delete
+                            </button>`.replaceAll(':id', data);
+                    },
                 },
-                {
-                    data: 'id',
-                    name: 'delete',
-                    render: function (data, type, full, meta) {
-                        return '<form action="{{ route('area.destroy', ':id') }}" method="POST" onsubmit="return confirm(\'Are you sure?\')"><input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form>'.replace(':id', data);
-                    }
-                },
-                {
-                    data: 'id',
-                    name: 'show',
-                    render: function (data, type, full, meta) {
-                        return '<a href="{{ route('area.show', ':id') }}" class="btn btn-success btn-sm">Show</a>'.replace(':id', data);
-                    }
-                }
             ]
         });
+
+        function sweetDelete(e) {
+            e.preventDefault();
+
+            const id = $(e.target).data('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This action cannot be undone!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ route('area.index') }}/' + id,
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "_method": 'DELETE'
+                        },
+                        success: function (data) {
+                            $('table').DataTable().ajax.reload();
+                            Swal.fire(
+                                'Deleted!',
+                                'The record has been deleted.',
+                                'success'
+                            );
+                        },
+                        error: function (data) {
+                            Swal.fire(
+                                'Error!',
+                                'An error occurred while deleting the record.',
+                                'error'
+                            );
+                        }
+                    });
+
+                }
+            });
+        }
     </script>
 @endsection

@@ -20,10 +20,16 @@ class DoctorController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return datatables()->collection(Doctor::with(['pharmacy' => function($query) {
+            $query = Doctor::with(['pharmacy' => function ($query) {
                 $query->select('id', 'name');
-            }])->role('doctor')->get())->toJson();
+            }])->role('doctor');
+
+            if ($request->has('pharmacy_id')) {
+                $query->where('pharmacy_id', $request->pharmacy_id);
+            }
+            return datatables()->collection($query->get())->toJson();
         }
+
         return view('doctor.index');
     }
 
@@ -41,12 +47,13 @@ class DoctorController extends Controller
     {
         return view('doctor.show', compact('doctor'));
     }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(DoctorStoreRequest $request)
     {
-        $imageName = time().'.'.$request->image->extension();
+        $imageName = time() . '.' . $request->image->extension();
         $request->image->move(public_path('images/doctors'), $imageName);
         $image = 'images/doctors/' . $imageName;
         $data = $request->except('image', 'password') + ['image' => $image, 'password' => Hash::make($request->password)];
@@ -75,10 +82,10 @@ class DoctorController extends Controller
             $doctor->password = Hash::make($request->password);
         }
         if ($request->hasFile('image')) {
-            if($doctor->image && file_exists($doctor->image)) {
+            if ($doctor->image && file_exists($doctor->image)) {
                 unlink($doctor->image);
             }
-            $imageName = time().'.'.$request->image->extension();
+            $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images/doctors'), $imageName);
             $doctor->image = 'images/doctors/' . $imageName;
         }
@@ -92,7 +99,10 @@ class DoctorController extends Controller
     public function destroy(Doctor $doctor)
     {
         $doctor->delete();
-        return redirect()->route('doctor.index')->with('success', 'Doctor deleted successfully!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Doctor deleted successfully'
+        ]);
     }
 
 }

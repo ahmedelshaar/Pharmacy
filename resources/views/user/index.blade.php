@@ -29,9 +29,7 @@
                     <th>Phone</th>
                     <th>Gender</th>
                     <th>Image</th>
-                    <th>Show</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
             </table>
@@ -59,27 +57,66 @@
                     }
                 },
                 {
-                    data: 'id',
-                    name: 'show',
+                    data: 'id', orderable: false, searchable: false,
                     render: function (data, type, full, meta) {
-                        return '<a href="{{ route('user.show', ':id') }}" class="btn btn-success btn-sm">Show</a>'.replace(':id', data);
-                    }
+                        return `
+                        <a href="{{ route('user.show', ':id') }}" class="btn btn-success btn-sm">
+                        <i class="fas fa-eye"></i>
+                        Show</a>
+                        <a class="btn btn-info btn-sm" href="{{route('user.edit',':id')}}">
+                            <i class="fas fa-pencil-alt"></i>
+                            Edit
+                        </a>
+                        <button class="btn btn-danger btn-sm swal-delete" onclick="sweetDelete(event)"
+                                data-id="{{ ':id' }}">
+                            <i class="fas fa-trash-alt"></i> Delete
+                            </button>`.replaceAll(':id', data);
+
+
+                    },
                 },
-                {
-                    data: 'id',
-                    name: 'edit',
-                    render: function (data, type, full, meta) {
-                        return '<a href="{{ route('user.edit', ':id') }}" class="btn btn-primary btn-sm">Edit</a>'.replace(':id', data);
-                    }
-                },
-                {
-                    data: 'id',
-                    name: 'delete',
-                    render: function (data, type, full, meta) {
-                        return '<form action="{{ route('user.destroy', ':id') }}" method="POST" onsubmit="return confirm(\'Are you sure?\')"><input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form>'.replace(':id', data);
-                    }
-                }
             ]
         });
+        function sweetDelete(e) {
+            e.preventDefault();
+
+            const id = $(e.target).data('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This action cannot be undone!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ route('user.index') }}/' + id,
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "_method": 'DELETE'
+                        },
+                        success: function (data) {
+                            $('table').DataTable().ajax.reload();
+                            Swal.fire(
+                                'Deleted!',
+                                'The record has been deleted.',
+                                'success'
+                            );
+                        },
+                        error: function (data) {
+                            Swal.fire(
+                                'Error!',
+                                'An error occurred while deleting the record.',
+                                'error'
+                            );
+                        }
+                    });
+
+                }
+            });
+        }
     </script>
 @endsection
