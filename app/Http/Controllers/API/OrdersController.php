@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\OrderStoreRequest;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,55 +12,57 @@ class OrdersController extends Controller
 {
     public function index()
     {
-//        If User have no orders
         if (Auth::user()->orders->isEmpty()) {
-            return response()->json('You have no orders');
+            return response()->json(['message' => 'You have no orders yet']);
         }
-        return response()->json(Auth::user()->orders()->paginate(10));
+        $orders = Auth::user()->orders;
+        $orders->makeHidden(['user_id', 'doctor_id', 'pharmacy_id', 'address_id']);
+        $orders->load(['pharmacy:id,name', 'address']);
+        return response()->json(['data' => $orders]);
     }
 
-    public function create()
+    public function store(OrderStoreRequest $request)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $prescriptions = [];
+        foreach ($request->prescription as $key => $image) {
+            $image = $request->file('prescription.' . $key);
+            $image_name = time() . $key . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/prescriptions'), $image_name);
+            $prescriptions[] = $image_name;
+        }
+        $request->merge(['user_id' => Auth::id()]);
+        Auth::user()->orders()->create($request->except('prescription') + ['prescription' => $prescriptions]);
+        return response()->json(['message' => 'Order created successfully']);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Order $order)
     {
-        //
+        if ($order->user_id != Auth::id()) {
+            return response()->json(['message' => 'You can not view this order'], 403);
+        }
+        $order->makeHidden(['user_id', 'doctor_id', 'pharmacy_id', 'address_id']);
+        $order->load(['pharmacy:id,name', 'address']);
+        return response()->json(['data' => $order]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function cancel(Order $order)
     {
-        //
+        if ($order->status != 'Waiting') {
+            return response()->json(['message' => 'You can not cancel this order'], 403);
+        }
+        $order->update(['status' => 'Canceled']);
+        return response()->json(['message' => 'Order cancelled successfully']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function confirm(Order $order)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($order->status != 'Waiting') {
+            return response()->json(['message' => 'You can not confirm this order'], 403);
+        }
+        $order->update(['status' => 'Confirmed']);
+        return response()->json(['message' => 'Order confirmed successfully']);
     }
 }

@@ -825,7 +825,7 @@
     var SELECTOR_DROPDOWN_MENU_ACTIVE = '.dropdown-menu.show';
     var SELECTOR_DROPDOWN_TOGGLE = '[data-toggle="dropdown"]';
     var CLASS_NAME_DROPDOWN_RIGHT = 'dropdown-menu-right';
-    var CLASS_NAME_DROPDOWN_SUBMENU = 'dropdown-submenu'; // TODO: this is unused; should be removed along with the extend?
+    var CLASS_NAME_DROPDOWN_SUBMENU = 'dropdown-submenu';
 
     var Default$9 = {};
     /**

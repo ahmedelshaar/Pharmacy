@@ -31,11 +31,11 @@ class UserController extends Controller
         $user->save();
         return response()->json(Auth::user());
     }
-    
+
     public function destroy()
     {
         if (Auth::user()->orders()->exists()) {
-            return response()->json('User Has Orders Can\'t Delete');
+            return response()->json(['message' => 'User Has Orders Can\'t Delete'], 403);
         }
         if (file_exists(public_path(Auth::user()->image))) {
             @unlink(public_path(Auth::user()->image));

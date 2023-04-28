@@ -16,14 +16,9 @@ class PharmacyController extends Controller
      */
     public function index(Request $request)
     {
-         if ($request->ajax()) {
-             return datatables()->collection(Pharmacy::with(['area' => function($query) {
-                 $query->select('id', 'name');
-             }, 'owner' => function($query) {
-                 $query->select('id', 'name', 'pharmacy_id');
-             }])->get())->toJson();
-         }
-
+        if ($request->ajax()) {
+            return datatables()->collection(Pharmacy::with('area:id,name', 'owner:id,name,pharmacy_id')->get())->toJson();
+        }
         return view('pharmacy.index');
     }
 
@@ -42,10 +37,10 @@ class PharmacyController extends Controller
     public function store(PharmacyStoreRequest $request)
     {
         $avatar = $request->file('avatar');
-        $imageName = time() . '.' . $avatar ->extension();
+        $imageName = time() . '.' . $avatar->extension();
         $avatar->move(public_path('images/pharmacies'), $imageName);
         $image = 'images/pharmacies/' . $imageName;
-        $pharmacy = Pharmacy::create($request->except( 'avatar') + ['avatar' => $image]);
+        $pharmacy = Pharmacy::create($request->except('avatar') + ['avatar' => $image]);
 
         $image = $request->file('image');
         $imageName = time() . '.' . $image->extension();
@@ -88,25 +83,25 @@ class PharmacyController extends Controller
     {
 
         $pharmacy->fill($request->except('avatar', 'image', 'password'));
-        if($request->hasFile('avatar')){
+        if ($request->hasFile('avatar')) {
             $avatar = $request->file('avatar');
-            $imageName = time() . '.' . $avatar ->extension();
-            $avatar ->move(public_path('images/pharmacies'), $imageName);
-            if($pharmacy->avatar != null && file_exists(public_path($pharmacy->avatar))){
+            $imageName = time() . '.' . $avatar->extension();
+            $avatar->move(public_path('images/pharmacies'), $imageName);
+            if ($pharmacy->avatar != null && file_exists(public_path($pharmacy->avatar))) {
                 unlink(public_path($pharmacy->avatar));
             }
             $pharmacy->avatar = 'images/pharmacies/' . $imageName;
         }
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->extension();
             $image->move(public_path('images/doctors'), $imageName);
-            if($pharmacy->owner->image != null && file_exists(public_path($pharmacy->owner->image))){
+            if ($pharmacy->owner->image != null && file_exists(public_path($pharmacy->owner->image))) {
                 unlink(public_path($pharmacy->owner->image));
             }
             $pharmacy->owner->image = 'images/doctors/' . $imageName;
         }
-        if($request->has('password')){
+        if ($request->has('password')) {
             $pharmacy->owner->password = bcrypt($request->password);
         }
         $pharmacy->owner->name = $request->doctor_name;

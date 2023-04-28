@@ -12,14 +12,45 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        if(request()->ajax()) {
-            return datatables()->of(Order::with(['user' => function($query) {
-                $query->select('id', 'name');
-            }])->get())->toJson();
+        if($request->ajax()){
+            return datatables()->collection(Order::whereNotNull('pharmacy_id')->with(['user:id,name', 'doctor:id,name', 'pharmacy:id,name'])->get())->toJson();
         }
         return view('order.index');
+//        $query = Order::with([
+//            'user:id,name',
+//            'doctor:id,name',
+//            'pharmacy' => function ($query) {
+//                $query->select('id', 'name');
+//                if (auth()->user()->hasRole('pharmacy')) {
+//                    $query->where('id', auth()->user()->pharmacy->id);
+//                }
+//            }
+//        ]);
+//
+//        if (auth()->user()->hasRole('pharmacy')) {
+//            $query->whereHas('pharmacy', function ($query) {
+//                $query->where('id', auth()->user()->pharmacy->id);
+//            });
+//        }
+//
+//        $query = Order::with(['user' => function ($query) {
+//                $query->select('id', 'name');
+//            }, 'doctor' => function ($query) {
+//                $query->select('id', 'name');
+//            }])->with('pharmacy', function ($query) {
+//                $query->select('id', 'name');
+////                if(auth()->user()->hasRole('owner')){
+////                    $query->where('id', auth()->user()->pharmacy->id);
+////                }
+//            });
+//            if ($request->has('pharmacy_id')) {
+//                $query->where('pharmacy_id', $request->pharmacy_id);
+//            }
+//            return datatables()->collection($query->get())->toJson();
+////        }
+//        return view('order.index');
     }
 
     /**
@@ -70,6 +101,9 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         $order->delete();
-        return redirect()->route('order.index')->with('success', 'Order deleted successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Order deleted successfully'
+        ]);
     }
 }

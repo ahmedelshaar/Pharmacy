@@ -38,17 +38,6 @@ class MedicineController extends Controller
         return redirect()->route('medicine.index')->with('success', 'New Medicine created Successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Medicine $medicine)
-    {
-        return view('medicine.show', compact('medicine'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Medicine $medicine)
     {
         return view('medicine.edit', compact('medicine'));

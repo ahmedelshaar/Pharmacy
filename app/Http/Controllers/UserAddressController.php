@@ -10,9 +10,9 @@ class UserAddressController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return datatables()->collection(UserAddress::where('user_id', $request->user_id)->with('area:id,name')->get())->toJson();
     }
 
     /**

@@ -2,8 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
+/**
+ *
+ *  @mixin Builder
+ */
 
 class Order extends Model
 {
@@ -17,12 +23,26 @@ class Order extends Model
         'doctor_id',
         'user_id',
         'address_id',
+        'total_amount'
     ];
 
     protected $casts = [
         'is_insured' => 'boolean',
-        'prescription' => 'json',
+        'prescription' => 'array',
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope('pharmacy', function ($query) {
+            if (auth()->user()->hasRole('owner') || auth()->user()->hasRole('doctor')) {
+                $query->where('pharmacy_id', auth()->user()->pharmacy->id);
+            }
+        });
+
+        static::addGlobalScope('status', function ($query) {
+            $query->where('status', '!=', 'New');
+        });
+    }
 
     public function pharmacy()
     {
@@ -62,6 +82,11 @@ class Order extends Model
     public function netIncome()
     {
         return $this->totalPrice() - $this->totalCost();
+    }
+
+    public function getIsInsuredAttribute($value)
+    {
+        return $value ? 'Yes' : 'No';
     }
 
 }

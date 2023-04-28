@@ -36,7 +36,7 @@
                     <div class="form-group">
                         <label for="image" class="d-block">image</label>
                         <img src="{{ asset($user['image']) }}" style="height: 250px; width: 250px; object-fit: cover"
-                             alt="{{ $user['name'] }}">
+                             alt="{{ $user['image'] }}">
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -103,10 +103,10 @@
                 <div class="col-sm-6">
                     <h1>{{$user->name}} Addresses</h1>
                 </div>
-                <div class="col-sm-6 d-flex justify-content-end">
-                    <a href="{{ route('doctor.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add a New
-                        Address</a>
-                </div>
+{{--                <div class="col-sm-6 d-flex justify-content-end">--}}
+{{--                    <a href="{{ route('doctor.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add a New--}}
+{{--                        Address</a>--}}
+{{--                </div>--}}
             </div>
         </div>
     </section>
@@ -122,9 +122,9 @@
                     <th>Floor Number</th>
                     <th>Flat Number</th>
                     <th>Is Main</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                    <th>Show</th>
+{{--                    <th>Edit</th>--}}
+{{--                    <th>Delete</th>--}}
+{{--                    <th>Show</th>--}}
                 </tr>
                 </thead>
             </table>
@@ -137,7 +137,12 @@
         $('#addresses-table').dataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('user.show',$user->id) }}",
+            ajax: {
+                url: "{{ route('user_address.index') }}",
+                data: function (d) {
+                    d.user_id = {{$user->id}}
+                }
+            },
             columns: [
                 {data: 'id'},
                 {data: 'area.name'},
@@ -146,27 +151,27 @@
                 {data: 'floor_number'},
                 {data: 'flat_number'},
                 {data: 'is_main'},
-                {
-                    data: 'id',
-                    name: 'edit',
-                    render: function (data, type, full, meta) {
-                        return '<a href="{{ route('user.edit', ':id') }}" class="btn btn-primary btn-sm">Edit</a>'.replace(':id', data);
-                    }
-                },
-                {
-                    data: 'id',
-                    name: 'delete',
-                    render: function (data, type, full, meta) {
-                        return '<form action="{{ route('user.destroy', ':id') }}" method="POST" onsubmit="return confirm(\'Are you sure?\')"><input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form>'.replace(':id', data);
-                    }
-                },
-                {
-                    data: 'id',
-                    name: 'show',
-                    render: function (data, type, full, meta) {
-                        return '<a href="{{ route('user.show', ':id') }}" class="btn btn-success btn-sm">Show</a>'.replace(':id', data);
-                    }
-                }
+                {{--{--}}
+                {{--    data: 'id',--}}
+                {{--    name: 'edit',--}}
+                {{--    render: function (data, type, full, meta) {--}}
+                {{--        return '<a href="{{ route('user.edit', ':id') }}" class="btn btn-primary btn-sm">Edit</a>'.replace(':id', data);--}}
+                {{--    }--}}
+                {{--},--}}
+                {{--{--}}
+                {{--    data: 'id',--}}
+                {{--    name: 'delete',--}}
+                {{--    render: function (data, type, full, meta) {--}}
+                {{--        return '<form action="{{ route('user.destroy', ':id') }}" method="POST" onsubmit="return confirm(\'Are you sure?\')"><input type="hidden" name="_method" value="DELETE"><input type="hidden" name="_token" value="{{ csrf_token() }}"><button type="submit" class="btn btn-danger btn-sm">Delete</button></form>'.replace(':id', data);--}}
+                {{--    }--}}
+                {{--},--}}
+                {{--{--}}
+                {{--    data: 'id',--}}
+                {{--    name: 'show',--}}
+                {{--    render: function (data, type, full, meta) {--}}
+                {{--        return '<a href="{{ route('user.show', ':id') }}" class="btn btn-success btn-sm">Show</a>'.replace(':id', data);--}}
+                {{--    }--}}
+                {{--}--}}
             ]
         });
     </script>
