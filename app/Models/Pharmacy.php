@@ -5,28 +5,32 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Sanctum\HasApiTokens;
 
 class Pharmacy extends Model
 {
-    use HasFactory , SoftDeletes;
+    use HasFactory, SoftDeletes, HasApiTokens;
+
 
     protected $fillable = [
         'name',
         'avatar',
         'priority',
-        'area_id',
+        'area_id'
     ];
+
+    public function pharmacy()
+    {
+        return $this->belongsTo(Pharmacy::class);
+    }
 
     public function area()
     {
         return $this->belongsTo(Area::class);
     }
 
-    public function owner()
+    public function orders()
     {
-        return $this->hasOne(Doctor::class)->role('owner');
+        return $this->hasMany(Order::class);
     }
-
-
-
 }

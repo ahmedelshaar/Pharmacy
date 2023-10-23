@@ -10,28 +10,14 @@ class UserAddress extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'area_id',
-        'street_name',
-        'building_number',
-        'floor_number',
-        'flat_number',
-        'is_main',
+        'street_name', 'building_number', 'floor_number', 'flat_number', 'is_main', 'user_id', 'area_id'
     ];
 
-    public function scopeMain($query)
-    {
-        return $query->where('is_main', true);
-    }
-
-    public function user()
-    {
+    public function user(){
         return $this->belongsTo(User::class);
     }
 
-    public function area()
-    {
+    public function area(){
         return $this->belongsTo(Area::class);
     }
-
 }

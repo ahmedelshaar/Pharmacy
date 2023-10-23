@@ -2,16 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
-use App\Models\Area;
-use App\Models\Doctor;
-use App\Models\Medicine;
-use App\Models\Order;
-use App\Models\OrderMedicine;
-use App\Models\Pharmacy;
-use App\Models\User;
-use App\Models\UserAddress;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,24 +14,85 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-//        $this->call(CountriesSeeder::class);
+        /* Permission::all()->each->delete();
+         Role::all()->each->delete();
+         $this->command->info('Creating roles.');
+         Role::all()->each->delete();
+         $admin = Role::create(['name' => 'admin']);
+         $owner = Role::create(['name' => 'owner']);
+         $doctor = Role::create(['name' => 'doctor']);
 
-//        Admin::factory(1)->create();
-//        User::factory(10)->create();
-//        Area::factory(10)->create();
-//        Pharmacy::factory(10)->create();
-//        Doctor::factory(10)->create();
-//        Medicine::factory(10)->create();
-//        UserAddress::factory(10)->create();
-//        Order::factory(10)->create();
-//        OrderMedicine::factory(10)->create();
+        */
+        /*
+                $this->command->info('Creating permissions.');
 
-        $this->call(RoleSeeder::class);
+                // Doctor Permissions
+                Permission::create(['name' => 'medicines']);
+                Permission::create(['name' => 'orders']);
+
+                // Owner Permissions
+                // this + Doctor Permissions
+                Permission::create(['name' => 'doctors']);
+
+                // Admin Permissions
+                // this + Owner Permissions + Doctor Permissions
+                Permission::create(['name' => 'areas']);
+                Permission::create(['name' => 'pharmacies']);
+                Permission::create(['name' => 'owners']);
+                Permission::create(['name' => 'users']);
+                Permission::create(['name' => 'addresses']);
 
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+                $this->command->info('Creating roles.');
+                Role::all()->each->delete();
+                $admin = Role::create(['name' => 'admin']);
+                $owner = Role::create(['name' => 'owner']);
+                $doctor = Role::create(['name' => 'doctor']);
+
+                $this->command->info('Assigning permissions to roles.');
+                // permissions for admin
+                $admin->givePermissionTo(Permission::all());
+                // permissions for doctor
+                $doctor->givePermissionTo('medicines');
+                $doctor->givePermissionTo('orders');
+                // perrimissions for owner
+                $owner->givePermissionTo(Permission::all()->except(['areas', 'pharmacies', 'owners', 'users']));
+                */
+
+        DB::table("medicines_types")->count() > 0
+            ?
+            $this->command->warn('Medicines types table is not empty, therefore NOT seeding!')
+            :
+            $this->call(MedicinesTypesSeeder::class);
+        DB::table("medicines")->count() > 0
+            ?
+            $this->command->warn('Medicines table is not empty, therefore NOT seeding!')
+            :
+            $this->call(MedicinesSeeder::class);
+
+        DB::table("admins")->count() > 0
+            ?
+            $this->command->warn('Admins table is not empty, therefore NOT seeding!')
+            :
+            $this->call(AdminSeeder::class);
+
+        DB::table(\Config::get('countries.table_name'))->count() > 0
+            ?
+            $this->command->warn('Countries table is not empty, therefore NOT seeding!')
+            :
+            $this->call(CountriesSeeder::class);
+
+        DB::table("areas")->count() > 0
+            ?
+            $this->command->warn('Areas table is not empty, therefore NOT seeding!')
+            :
+//            AreaFactory::new()->count(50)->create();
+            $this->call(AreaSeeder::class);
+        DB::table("user_addresses")->count() > 0
+            ?
+            $this->command->warn('Addresses table is not empty, therefore NOT seeding!')
+            :
+//            AreaFactory::new()->count(50)->create();
+            $this->call(UserAddressesSeeder::class);
     }
 }

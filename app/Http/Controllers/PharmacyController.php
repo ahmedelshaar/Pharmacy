@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdatePharmacyRequest;
-use App\Models\Doctor;
+use App\Models\Area;
 use App\Models\Pharmacy;
 use Illuminate\Http\Request;
-use App\Models\Area;
-use App\http\Requests\PharmacyStoreRequest;
+use App\Http\Requests\PharmacyRequest;
 
 class PharmacyController extends Controller
 {
@@ -17,9 +15,11 @@ class PharmacyController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return datatables()->collection(Pharmacy::with('area:id,name', 'owner:id,name,pharmacy_id')->get())->toJson();
+            return datatables()->collection(Pharmacy::withTrashed()->with(['area' => function ($query) {
+                $query->select('id', 'name');
+            }])->get())->toJson();
         }
-        return view('pharmacy.index');
+        return view('pharmacies.index');
     }
 
     /**
@@ -28,101 +28,83 @@ class PharmacyController extends Controller
     public function create()
     {
         $areas = Area::all();
-        return view('pharmacy.create', compact('areas'));
+        return view('pharmacies.create', compact('areas'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PharmacyStoreRequest $request)
+    public function store(PharmacyRequest $request)
     {
-        $avatar = $request->file('avatar');
-        $imageName = time() . '.' . $avatar->extension();
-        $avatar->move(public_path('images/pharmacies'), $imageName);
-        $image = 'images/pharmacies/' . $imageName;
-        $pharmacy = Pharmacy::create($request->except('avatar') + ['avatar' => $image]);
-
-        $image = $request->file('image');
-        $imageName = time() . '.' . $image->extension();
-        $image->move(public_path('images/doctors'), $imageName);
-        $image = 'images/doctors/' . $imageName;
-        $doctor = Doctor::create([
-            'name' => $request->doctor_name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'image' => $image,
-            'national_id' => $request->national_id,
-            'pharmacy_id' => $pharmacy->id,
-        ]);
-        $doctor->assignRole('owner');
-        return redirect()->route('pharmacy.index')->with('success', 'New Pharmacy created Successfully!');
+        $pharmacy = Pharmacy::create($request->all());
+        if ($request->hasFile('avatar')) {
+            $avatarName = time().'.'.$request->avatar->extension();
+            $request->avatar->move('images/pharmacies/', $avatarName);
+            $pharmacy->avatar = 'images/pharmacies/' . $avatarName;
+        } else {
+            $avatarName = null;
+        }
+        $pharmacy->save();
+        return redirect()->route('pharmacies.index')->with('success', 'Pharmacy created successfully!');
     }
-
 
     /**
      * Display the specified resource.
      */
     public function show(Pharmacy $pharmacy)
     {
-        return view('pharmacy.show', compact('pharmacy'));
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Pharmacy $pharmacy)
+    public function edit($id)
     {
+        $pharmacy = Pharmacy::find($id);
         $areas = Area::all();
-        return view('pharmacy.edit', compact(['pharmacy', 'areas']));
+        return view('pharmacies.edit', compact( 'pharmacy','areas'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePharmacyRequest $request, Pharmacy $pharmacy)
+    public function update(PharmacyRequest $request, Pharmacy $pharmacy)
     {
-
-        $pharmacy->fill($request->except('avatar', 'image', 'password'));
-        if ($request->hasFile('avatar')) {
-            $avatar = $request->file('avatar');
-            $imageName = time() . '.' . $avatar->extension();
-            $avatar->move(public_path('images/pharmacies'), $imageName);
-            if ($pharmacy->avatar != null && file_exists(public_path($pharmacy->avatar))) {
-                unlink(public_path($pharmacy->avatar));
+        $pharmacy->update($request->except('avatar'));
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $old_avatar = $pharmacy->avatar;
+            $avatar = $request->avatar;
+            $avatar_new_name = time().'.'.$request->avatar->extension();
+            if ($avatar->move('images/pharmacies/', $avatar_new_name)) {
+                unlink($old_avatar);
             }
-            $pharmacy->avatar = 'images/pharmacies/' . $imageName;
+            $pharmacy->avatar = 'images/pharmacies/' . $avatar_new_name;
         }
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->extension();
-            $image->move(public_path('images/doctors'), $imageName);
-            if ($pharmacy->owner->image != null && file_exists(public_path($pharmacy->owner->image))) {
-                unlink(public_path($pharmacy->owner->image));
-            }
-            $pharmacy->owner->image = 'images/doctors/' . $imageName;
-        }
-        if ($request->has('password')) {
-            $pharmacy->owner->password = bcrypt($request->password);
-        }
-        $pharmacy->owner->name = $request->doctor_name;
-        $pharmacy->owner->email = $request->email;
-        $pharmacy->owner->national_id = $request->national_id;
-        $pharmacy->owner->save();
         $pharmacy->save();
-        return redirect()->route('pharmacy.index')->with('success', 'Pharmacy updated Successfully!');
+        return redirect()->route('pharmacies.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Pharmacy $pharmacy)
+    public function destroy($id)
     {
-        $pharmacy->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Pharmacy deleted successfully'
-        ]);
+        $pharmacy = Pharmacy::withTrashed()->find($id);
+        if ($pharmacy->trashed()) {
+            $pharmacy->forceDelete();
+            if ($pharmacy->avatar) {
+                unlink($pharmacy->avatar);
+            }
+        } else {
+            $pharmacy->delete();
+        }
+        return redirect()->route('pharmacies.index');
     }
-
-
+    public function restore($id)
+    {
+        $pharmacy = Pharmacy::withTrashed()->find($id);
+        $pharmacy->restore();
+        return redirect()->route('pharmacies.index');
+    }
 }

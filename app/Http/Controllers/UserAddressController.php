@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserAddress\AddUserAddressRequest;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,14 @@ class UserAddressController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        return datatables()->collection(UserAddress::where('user_id', $request->user_id)->with('area:id,name')->get())->toJson();
+        $addresses = UserAddress::first()->paginate(10);
+        if($addresses) {
+            return view('admin.addresses.index', compact('addresses'));
+        }else{
+            return back()->with('error', 'Something Went Wrong');
+        }
     }
 
     /**
@@ -20,13 +26,12 @@ class UserAddressController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AddUserAddressRequest $request)
     {
         //
     }
@@ -42,7 +47,7 @@ class UserAddressController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(UserAddress $userAddress)
+    public function edit(UserAddress $address)
     {
         //
     }
@@ -50,7 +55,7 @@ class UserAddressController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, UserAddress $userAddress)
+    public function update(Request $request, UserAddress $address)
     {
         //
     }
@@ -58,8 +63,14 @@ class UserAddressController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(UserAddress $userAddress)
+    public function destroy($id)
     {
-        //
+        $address = UserAddress::find($id);
+        if($address){
+            $address->delete();
+            return redirect()->route('addresses.index')->with('success', 'Address Deleted Successfully');
+        }else{
+            return back()->with('error', 'Area Not Found');
+        }
     }
 }

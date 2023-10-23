@@ -2,27 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AreaStoreRequest;
-use App\Http\Requests\AreaUpdateRequest;
-use App\Http\Requests\StoreAreaRequest;
+use App\Http\Requests\Area\AddAreaRequest;
+use App\Http\Requests\Area\EditAreaRequest;
 use App\Models\Area;
-use Illuminate\Http\Request;
-use Webpatser\Countries\Countries;
-
+use App\Models\Country;
 
 class AreaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        if ($request->ajax()) {
-            return datatables()->collection(Area::with(['country' => function($query) {
-                $query->select('id', 'name');
-            }])->get())->toJson();
+//        dd(auth()->user()->getAllPermissions(), auth()->user()->getRoleNames(), auth()->user()->hasRole('admin'), auth()->user()->Permissions());
+        $areas = Area::first()->paginate(10);
+        return view('admin.areas.index', compact('areas'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(AddAreaRequest $request)
+    {
+        $area = Area::create($request->all());
+        if ($area) {
+            return redirect()->route('areas.index')->with('success', 'Area created successfully!');
+        } else {
+            return back()->with('error', 'Something Went Wrong');
         }
-        return view('area.index');
     }
 
     /**
@@ -30,17 +37,8 @@ class AreaController extends Controller
      */
     public function create()
     {
-        $countries = Countries::select('id', 'name')->get();
-        return view('area.create', compact('countries'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(AreaStoreRequest $request)
-    {
-        Area::create($request->all());
-        return redirect()->route('area.index');
+        $countries = Country::all();
+        return view('admin.areas.create', compact('countries'));
     }
 
     /**
@@ -48,7 +46,7 @@ class AreaController extends Controller
      */
     public function show(Area $area)
     {
-        return view('area.show', compact('area'));
+
     }
 
     /**
@@ -56,28 +54,33 @@ class AreaController extends Controller
      */
     public function edit(Area $area)
     {
-        $countries = Countries::select('id', 'name')->get();
-        return view('area.edit', compact('area', 'countries'));
+        $countries = Country::all();
+
+        return view('admin.areas.edit', compact('area', 'countries'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(AreaUpdateRequest $request, Area $area)
+    public function update(EditAreaRequest $request, Area $area)
     {
-        $area->update($request->all());
-        return redirect()->route('area.index');
+        if ($area->update($request->all()))
+            return redirect()->route('areas.index')->with('success', 'Area Updated Successfully');
+        else
+            return redirect()->route('areas.index')->with('error', 'Something Went Wrong!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Area $area)
+    public function destroy($id)
     {
-        $area->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Area deleted successfully'
-        ]);
+        $area = Area::find($id);
+        if ($area) {
+            $area->delete();
+            return redirect()->route('areas.index')->with('success', 'Area Deleted Successfully');
+        } else {
+            return back()->with('error', 'Area Not Found');
+        }
     }
 }

@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Os-Pharmacy'),
 
     /*
     |--------------------------------------------------------------------------
@@ -181,7 +181,11 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Yajra\DataTables\DataTablesServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+        Cog\Laravel\Ban\Providers\BanServiceProvider::class,
+        Webpatser\Countries\CountriesServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+        RealRashid\SweetAlert\SweetAlertServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -195,9 +199,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
-        Webpatser\Countries\CountriesServiceProvider::class,
-
 
     ],
 
@@ -213,10 +214,11 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'Countries' => Webpatser\Countries\CountriesFacade::class,
-        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Countries' => Webpatser\Countries\CountriesFacade::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
+
     ])->toArray(),
 
 ];

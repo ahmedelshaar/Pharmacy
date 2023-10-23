@@ -10,7 +10,15 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-
+                        <div class="row mb-3">
+                                <label class="col-md-4 col-form-label text-md-end" for="guard">Role</label>
+                                <div class="col-md-6">
+                                <select class="form-select" name="guard" id="guard" required>
+                                    <option value="admin">Admin</option>
+                                    <option value="doctor"> Doctor </option>
+                                </select>
+                                </div>
+                        </div>
                         <div class="row mb-3">
                             <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
 

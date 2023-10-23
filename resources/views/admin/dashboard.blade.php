@@ -10,8 +10,8 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Dashboard v1</li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -29,7 +29,6 @@
                     <div class="small-box bg-info">
                         <div class="inner">
                             <h3>150</h3>
-
                             <p>New Orders</p>
                         </div>
                         <div class="icon">
@@ -59,7 +58,6 @@
                     <div class="small-box bg-warning">
                         <div class="inner">
                             <h3>44</h3>
-
                             <p>User Registrations</p>
                         </div>
                         <div class="icon">
@@ -95,12 +93,29 @@
                         <div class="card-header">
                             <h3 class="card-title">
                                 <i class="fas fa-chart-pie mr-1"></i>
-                                Gender
+                                Sales
                             </h3>
+                            <div class="card-tools">
+                                <ul class="nav nav-pills ml-auto">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div><!-- /.card-header -->
                         <div class="card-body">
                             <div class="tab-content p-0">
-                                <div id="genders-chart"></div>
+                                <!-- Morris chart - Sales -->
+                                <div class="chart tab-pane active" id="revenue-chart"
+                                     style="position: relative; height: 300px;">
+                                    <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
+                                </div>
+                                <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
+                                    <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
+                                </div>
                             </div>
                         </div><!-- /.card-body -->
                     </div>
@@ -588,25 +603,5 @@
 @endsection
 
 @section('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.min.js"></script>
-    <script>
-        new Chart(document.getElementById("genders-chart"), {
-            type: 'pie',
-            data: {
-                labels: @php echo $users['labels'] @endphp,
-                datasets: [{
-                    label: 'Gender',
-                    {{ JS::from }}
-                    data: @php echo $users['data'] @endphp,
-                    backgroundColor: [
-                        'rgb(255, 99, 132)',
-                        'rgb(54, 162, 235)',
-                        'rgb(255, 205, 86)'
-                    ],
-                    hoverOffset: 4
-                }]
-            },
-        });
-    </script>
-{{--    <script src="{{ asset('dist/js/pages/dashboard.js') }}"></script>--}}
+    <script src="{{ asset('dist/js/pages/dashboard.js') }}"></script>
 @endsection

@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail,CanResetPassword
 {
-    use HasApiTokens, HasFactory, Notifiable, Billable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -23,15 +22,15 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name',
         'email',
-        'email_verified_at',
+        'gender',
         'password',
+        'birth_date',
+        'phone',
         'national_id',
         'image',
-        'phone',
-        'gender',
-        'birth_date',
         'last_login'
     ];
+    public $timestamps;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -50,15 +49,20 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-
     ];
 
-    public function addresses(): HasMany
+    /**
+     * @return Contracts\HasAbilities
+     */
+    public function getAccessToken(): Contracts\HasAbilities
+    {
+        return $this->accessToken;
+    }
+    public function addresses()
     {
         return $this->hasMany(UserAddress::class);
     }
-
-    public function orders(): HasMany
+    public function orders()
     {
         return $this->hasMany(Order::class);
     }

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\MedicineStoreRequest;
-use App\Http\Requests\MedicineUpdateRequest;
-use App\Models\Doctor;
+use App\Http\Requests\Medicine\StoreMedicineRequest;
+use App\Http\Requests\Medicine\UpdateMedicineRequest;
 use App\Models\Medicine;
+use App\Models\MedicineType;
 use Illuminate\Http\Request;
+
 
 class MedicineController extends Controller
 {
@@ -15,10 +16,12 @@ class MedicineController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->ajax()) {
-            return datatables()->collection(Medicine::all())->toJson();
+        if ($request->ajax()) {
+            return datatables()->collection(Medicine::with([
+                'type:id,name',
+            ])->get())->toJson();
         }
-        return view('medicine.index');
+        return view('admin.medicines.index');
     }
 
     /**
@@ -26,47 +29,64 @@ class MedicineController extends Controller
      */
     public function create()
     {
-        return view('medicine.create');
+        $types = MedicineType::all();
+        return view('admin.medicines.create', compact('types'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(MedicineStoreRequest $request)
+    public function store(StoreMedicineRequest $request)
     {
-        Medicine::create($request->all());
-        return redirect()->route('medicine.index')->with('success', 'New Medicine created Successfully!');
+//        dd($request->all());
+        $medicine = new Medicine();
+        $medicine->name = $request->name;
+        $medicine->price = $request->price;
+        $medicine->type_id = $request->type_id;
+        $medicine->save();
+        return redirect()->route('medicines.index')->with('success', 'Item stored successfully!');
     }
 
-    public function edit(Medicine $medicine)
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
     {
-        return view('medicine.edit', compact('medicine'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id)
+    {
+//        dd($id);
+        $medicine = Medicine::find($id);
+        $types = MedicineType::all();
+        return view('admin.medicines.edit', ['medicine' => $medicine], compact('medicine', 'types'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(MedicineUpdateRequest $request, Medicine $medicine)
+    public function update($id, UpdateMedicineRequest $request)
     {
-        $medicine->update($request->all());
-        return redirect()->route('medicine.index')->with('success', 'Medicine updated successfully');
+        $medicine = Medicine::find($id);
+        $medicine->name = $request->name;
+        $medicine->price = $request->price;
+        $medicine->type_id = $request->type_id;
+        $medicine->save();
+        return redirect()->route('medicines.index')->with('success', 'Item updated successfully!');
     }
-
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Medicine $medicine)
+    public function destroy($id)
     {
+//        dd($id);
+        $medicine = Medicine::find($id);
+//        dd($medicine);
         $medicine->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Medicine deleted successfully'
-        ]);
+        return redirect()->route('medicines.index')->with('success', 'Item Deleted successfully!');
     }
-
 }
-
-
-
-

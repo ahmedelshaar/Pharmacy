@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -9,16 +8,22 @@ use Webpatser\Countries\Countries;
 
 class CountriesSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
+        //Empty the countries table
+//        DB::table(\Config::get('countries.table_name'))->delete();
+
+        //Get all of the countries
         $countries = (new Countries())->getList();
-        $index = 1;
-        foreach ($countries as $countryId => $country){
+        foreach ($countries as $countryId => $country) {
             DB::table(\Config::get('countries.table_name'))->insert(array(
-                'id' => $index,
+                'id' => $countryId,
                 'capital' => ((isset($country['capital'])) ? $country['capital'] : null),
                 'citizenship' => ((isset($country['citizenship'])) ? $country['citizenship'] : null),
                 'country_code' => $country['country-code'],
@@ -35,9 +40,9 @@ class CountriesSeeder extends Seeder
                 'eea' => (bool)$country['eea'],
                 'calling_code' => $country['calling_code'],
                 'currency_symbol' => ((isset($country['currency_symbol'])) ? $country['currency_symbol'] : null),
-                'flag' =>((isset($country['flag'])) ? $country['flag'] : null),
+                'flag' => ((isset($country['flag'])) ? $country['flag'] : null),
             ));
-            $index++;
         }
+        $this->command->info('Countries created successfully.');
     }
 }
